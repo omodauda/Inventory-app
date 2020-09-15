@@ -1,0 +1,21 @@
+{
+  "name": "inventory-app",
+  "version": "1.0.0",
+  "description": "Inventory store app.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "test": "mocha --timeout 10000"
+  },
+  "author": "@omodauda",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.10.5"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "mocha": "^8.1.3"
+  }
+}
