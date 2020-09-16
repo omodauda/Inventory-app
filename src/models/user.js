@@ -77,7 +77,17 @@ userSchema.pre('save', async function(next) {
     catch(error){
         next(error);
     }
-})
+});
+
+//checks if password is valid on login
+userSchema.methods.isValidPassword = async function (password){
+    try{
+        return await bcrypt.compare(password, this.local.password);
+    }
+    catch(error){
+        throw new Error(error);
+    }
+};
 
 const User = mongoose.model('User', userSchema);
 

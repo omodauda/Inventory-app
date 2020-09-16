@@ -29,9 +29,12 @@ module.exports = {
         password: Joi.string().min(5).required(),
         firstName: Joi.string().required(),
         lastName: Joi.string().required(),
-        phone: Joi.string(),
-        address: Joi.string()
+        role: Joi.string(),
 
       }),
+      loginSchema: Joi.object().keys({
+        email: Joi.string().email().required(),
+        password: Joi.string().required()
+      })
     }
 }

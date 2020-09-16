@@ -1,3 +1,5 @@
+process.env.NODE_ENV = 'test';
+
 const mongoose = require('mongoose');
 
 //Require test dependencies
@@ -11,7 +13,7 @@ chai.use(chaiHttp);
 describe('/GET home route', () => {
     it('it should GET home route', (done) => {
         chai.request(app)
-            .get("/")
+            .get("/api/v1")
             .end((err, res) => {
                 res.should.have.status(200);
                 res.body.should.be.a('object');

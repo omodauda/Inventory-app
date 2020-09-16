@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 require('./database/db');
 const userRoutes = require('./routes/user');
@@ -16,9 +17,11 @@ app.get("/api/v1", (req, res) => {
     })
 });
 
+
 app.use("/api/v1/user", userRoutes);
 
-const PORT = process.env.PORT || 3000;
+// const PORT = process.env.PORT || 3000;
+const PORT = process.env.NODE_ENV === 'test' ? 5000 : process.env.PORT || 3000;
 
 app.listen(PORT, () => {
     console.log(`server running on port ${PORT}`)
