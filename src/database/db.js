@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
-const DB_URL = process.env.NODE_ENV === 'test' ? 'mongodb://localhost/TEST': 'mongodb://localhost/inventory';
+// const DB_URL = process.env.NODE_ENV === 'test' ? 'mongodb://localhost/TEST': 'mongodb://localhost/inventory';
+const DB_URL = 'mongodb://localhost/inventory';
 
 mongoose.connect(DB_URL, 
 {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false});

@@ -11,7 +11,7 @@ module.exports = {
           .status(400)
           .json({
             status: 'fail',
-            data: {
+            error: {
               message: errorMessage
             }
           });

@@ -22,13 +22,14 @@ module.exports = {
             const { email, password, firstName, lastName, role } = req.body;
             //check if user with the same email already exist
             const existingUser = await User.findOne({'local.email': email});
+            const existingGoogleAccount = await User.findOne({'google.email': email});
 
-            if(existingUser){
+            if(existingUser || existingGoogleAccount){
                 return res
                 .status(406)
                 .json({
                     status: 'fail',
-                    data: {
+                    error: {
                         message: `E-mail ${email} already in use`
                     }
                 })
@@ -56,8 +57,9 @@ module.exports = {
                 status: 'success',
                 message: "user created successfully!",
                 data: {
-                    email: user.local.email,
-                    token
+                    token,
+                    role: user.role,
+                    email: user.local.email
                 }
             });
         }
@@ -66,7 +68,9 @@ module.exports = {
             .status(400)
             .json({
                 status: "fail",
-                error: error.message
+                error: {
+                    message: error.message
+                }
             })
         }
     },
@@ -74,7 +78,7 @@ module.exports = {
     login: async (req, res) => {
         try{
             const token =  signToken(req.user);
-            const {local: {email}, role, firstName, lastName, orders} = req.user;
+            const {local: {email}, role, firstName, lastName} = req.user;
             res
             .status(200)
             .json({
@@ -84,8 +88,7 @@ module.exports = {
                     role,
                     email,
                     firstName,
-                    lastName,
-                    orders
+                    lastName
                 }
             })
         }
@@ -94,10 +97,41 @@ module.exports = {
             .status(400)
             .json({
                 status: 'fail',
-                error: error.message
+                error: {
+                    message: error.message
+                }
             })
         }
 
+    },
+
+    googleOauth: async (req, res) => {
+        try{
+            const {role, firstName, lastName, google: {email}} = req.user;
+            const token = signToken(req.user);
+            res
+            .status(200)
+            .json({
+                status: 'success',
+                data: {
+                    token,
+                    role,
+                    email,
+                    firstName,
+                    lastName
+                }
+            })
+        }
+        catch(error) {
+            res
+            .status(400)
+            .json({
+                status: 'fail',
+                error: {
+                    message: error.message
+                }
+            })
+        }
     },
     
 };
