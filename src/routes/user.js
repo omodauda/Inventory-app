@@ -10,7 +10,7 @@ const {validateBody, schemas} = require('../helpers/validator');
 const accessControl = require('../middlewares/accessControl');
 
 
-const {signUp, login, googleOauth, verifyUser} = require('../controllers/user');
+const {signUp, login, googleOauth, verifyUser, updateUser} = require('../controllers/user');
 
 router
     .route("/signup")
@@ -27,6 +27,10 @@ router
 router
     .route("/google")
     .post(passportGoogle, googleOauth);
+
+router
+    .route('/update')
+    .patch(validateBody(schemas.updateSchema), passportJWT, updateUser)
 
 
 module.exports = router;

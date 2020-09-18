@@ -22,7 +22,7 @@ module.exports = {
         try{
             //define the input from the request body
             const { email, password, firstName, lastName, role } = req.body;
-            
+
             //check if user with the same email already exist
             const existingUser = await User.findOne({'local.email': email});
             const existingGoogleAccount = await User.findOne({'google.email': email});
@@ -221,5 +221,30 @@ module.exports = {
             })
         }
     },
+
+    updateUser: async (req, res) => {
+        try{
+            const {id} = req.user
+            //dynamically update user details.
+            await User.findByIdAndUpdate(id, req.body);
+
+            res
+            .status(200)
+            .json({
+                status: "success",
+                message: "Update successful"
+            })
+        }
+        catch(error){
+            res
+            .status(400)
+            .json({
+                status: 'fail',
+                error: {
+                    message: error.message
+                }
+            })
+        }
+    }
     
 };

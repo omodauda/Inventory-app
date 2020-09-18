@@ -32,9 +32,17 @@ module.exports = {
         role: Joi.string(),
 
       }),
+
       loginSchema: Joi.object().keys({
         email: Joi.string().email().required(),
         password: Joi.string().required()
+      }),
+      
+      updateSchema: Joi.object().keys({
+        phone: Joi.string(),
+        location: Joi.string(),
+        firstName: Joi.string(),
+        lastName: Joi.string()
       })
     }
 }
