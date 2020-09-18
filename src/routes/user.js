@@ -10,11 +10,15 @@ const {validateBody, schemas} = require('../helpers/validator');
 const accessControl = require('../middlewares/accessControl');
 
 
-const {signUp, login, googleOauth} = require('../controllers/user');
+const {signUp, login, googleOauth, verifyUser} = require('../controllers/user');
 
 router
     .route("/signup")
     .post(validateBody(schemas.userSchema), signUp)
+
+router
+    .route("/confirm")
+    .patch(verifyUser)
 
 router
     .route("/login")

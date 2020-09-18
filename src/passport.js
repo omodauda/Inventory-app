@@ -64,26 +64,32 @@ passport.use(
     }, 
     async(accessToken, refreshToken, profile, done) => {
         try{
-            const {id, email, given_name: firstName, family_name: lastName} = profile._json;
+            //destructure user google profile
+            const {id, email, verified_email, given_name: firstName, family_name: lastName} = profile._json;
+
             //check if user already exist. If yes, return the user
             const existingUser = await User.findOne({'google.id': profile.id});
-
             if(existingUser){
                 return done(null, existingUser)
             }
 
+            /*check if user is gmail verified. If yes, auto verify the user otherwise set status to not verified */
+            const status = verified_email ? "Verified" : "Not verified";
+
+            //create user object
             const user = new User({
                 method: 'google',
                 google: {
                     id,
                     email
                 },
+                status,
                 firstName,
                 lastName
             });
-
+            //save user doc
             await user.save();
-
+            //return saved user
             return done(null, user);
         }
         catch(error){

@@ -36,13 +36,13 @@ const userSchema = new Schema({
         default: "user"
     },
     confirmationToken:{
-        token: Number,
+        token: String,
         tokenExpiration: Date
     },
     status:{
         type: String,
-        enum: ["pending confirmation", "confirmed", "suspended"],
-        default: "pending confirmation"
+        enum: ["Not verified", "Verified", "Suspended"],
+        default: "Not verified"
     },
     firstName: {
         type: String,
