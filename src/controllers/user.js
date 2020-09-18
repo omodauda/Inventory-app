@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const JWT = require('jsonwebtoken');
-const axios = require('axios');
+// const axios = require('axios');
+const sendMail = require('../helpers/email');
 
 const signToken = (user) => {
     return JWT.sign({
@@ -64,13 +65,8 @@ module.exports = {
             const subject = "Your account confirmation token (valid for 10 mins)";
             const text = `Thank you for joining inventory app. Your confirmation token: ${confirmToken}`;
 
-            const mail = axios.post('https://omodauda-email-dispatcher.herokuapp.com/api/v1/sendmail', 
-                {
-                    recipient, 
-                    subject, 
-                    text
-                }
-            );
+            sendMail(recipient, subject, text);
+
             //sign authentication token
             const token = signToken(user)
             //respond with the new user document
