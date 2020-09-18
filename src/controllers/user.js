@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const JWT = require('jsonwebtoken');
+const axios = require('axios');
 
 const signToken = (user) => {
     return JWT.sign({
@@ -34,6 +35,12 @@ module.exports = {
                     }
                 })
             }
+
+            // Generate a confirmation token, save it in the database
+            const confirmToken = Math.floor(10000 + Math.random() * 9000);
+            //set token expiration time to 10mins
+            const tokenExpiration = new Date(Date.now() + 10 * 60 * 1000)
+           
             //create the user object
             const user = new User({
                 method: "local",
@@ -42,13 +49,29 @@ module.exports = {
                     password
                 },
                 role,
+                confirmationToken:{
+                    token: confirmToken,
+                    tokenExpiration
+                },
                 firstName,
                 lastName
             });
             //save the new user doc
             await user.save();
 
-            //sign token
+            //send confirmationToken to user e-mail
+            const recipient = user.local.email;
+            const subject = "Your account confirmation token (valid for 10 mins)";
+            const text = `Thank you for joining inventory app. Your confirmation token: ${confirmToken}`;
+
+            const mail = axios.post('https://omodauda-email-dispatcher.herokuapp.com/api/v1/sendmail', 
+                {
+                    recipient, 
+                    subject, 
+                    text
+                }
+            );
+            //sign authentication token
             const token = signToken(user)
             //respond with the new user document
             res
@@ -58,8 +81,11 @@ module.exports = {
                 message: "user created successfully!",
                 data: {
                     token,
+                    confirmationToken: confirmToken,
                     role: user.role,
-                    email: user.local.email
+                    email: user.local.email,
+                    firstName,
+                    lastName
                 }
             });
         }

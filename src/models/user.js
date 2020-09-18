@@ -35,6 +35,15 @@ const userSchema = new Schema({
         enum: ["user", "admin"],
         default: "user"
     },
+    confirmationToken:{
+        token: Number,
+        tokenExpiration: Date
+    },
+    status:{
+        type: String,
+        enum: ["pending confirmation", "confirmed", "suspended"],
+        default: "pending confirmation"
+    },
     firstName: {
         type: String,
         required: true,
@@ -48,13 +57,12 @@ const userSchema = new Schema({
     phone: {
         type: Number
     },
-    address: {
-        type: [String],
-        default: undefined
+    location: {
+        type: String
     },
-    orders: [{
+    products: [{
         type: Schema.Types.ObjectId,
-        ref: 'order'
+        ref: 'product'
     }]
 }, {timestamps: true});
 
