@@ -165,6 +165,7 @@ module.exports = {
         try{
             const token =  signToken(req.user);
             const {local: {email}, role, firstName, lastName, status} = req.user;
+            
             res
             .status(200)
             .json({

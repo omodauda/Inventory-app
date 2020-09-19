@@ -11,6 +11,7 @@ const accessControl = require('../middlewares/accessControl');
 
 
 const {signUp, login, googleOauth, verifyUser, updateUser} = require('../controllers/user');
+const {getProductsByUser} = require('../controllers/product');
 
 router
     .route("/signup")
@@ -32,5 +33,9 @@ router
     .route('/update')
     .patch(validateBody(schemas.updateSchema), passportJWT, updateUser)
 
+router
+    .route("/products")
+    .get(passportJWT, getProductsByUser)
 
+    
 module.exports = router;
