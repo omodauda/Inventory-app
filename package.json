@@ -4,9 +4,9 @@
   "description": "Inventory store app.",
   "main": "app.js",
   "scripts": {
-    "start": "node src/app.js",
-    "test": "mocha --timeout 10000",
-    "dev": "nodemon src/app.js"
+    "start": "node src/index.js",
+    "test": "jest",
+    "dev": "nodemon src/index.js"
   },
   "author": "@omodauda",
   "license": "MIT",
@@ -24,9 +24,8 @@
     "passport-local": "^1.0.0"
   },
   "devDependencies": {
-    "chai": "^4.2.0",
-    "chai-http": "^4.3.0",
-    "mocha": "^8.1.3",
-    "nodemon": "^2.0.4"
+    "jest": "^26.5.2",
+    "nodemon": "^2.0.4",
+    "supertest": "^5.0.0"
   }
 }

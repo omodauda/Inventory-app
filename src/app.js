@@ -22,11 +22,6 @@ app.get("/api/v1", (req, res) => {
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/products", productRoutes);
 
-// const PORT = process.env.PORT || 3000;
-const PORT = process.env.NODE_ENV === 'test' ? 5000 : process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-    console.log(`server running on port ${PORT}`)
-});
 
 module.exports = app;
