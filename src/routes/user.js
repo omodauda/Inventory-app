@@ -19,7 +19,7 @@ router
 
 router
     .route("/confirm")
-    .patch(verifyUser)
+    .post(verifyUser)
 
 router
     .route("/login")
