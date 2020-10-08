@@ -22,6 +22,12 @@ app.get("/api/v1", (req, res) => {
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/products", productRoutes);
 
+app.use((err, req, res, next) => {
+    res.status(500).json({
+      status: 'fail',
+      error: err.message
+    });
+});
 
 
 module.exports = app;

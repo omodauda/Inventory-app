@@ -42,7 +42,7 @@ passport.use( new LocalStrategy(
             }
 
             //check if the password is correct
-            const isMatch = user.isValidPassword(password);
+            const isMatch = await user.isValidPassword(password);
             //if password is invalid return error
             if(!isMatch){
                 return done(new Error('Invalid password'), false);
