@@ -144,5 +144,73 @@ describe('The register process', () => {
         });
 
     });
+
+    describe('User login', () => {
+
+        it('should return 400 on invalid details', async () => {
+
+            const createdUser = await app().post('/api/v1/user/signup').send(user);
+
+            const {
+                status, 
+                message, 
+                data: {
+                    email, 
+                }
+            } = createdUser.body;
+
+            const body = {
+                email: email, 
+                password: 'xxx'
+            };
+
+            const response = await app().post('/api/v1/user/login').send(body);
+
+            expect(response.status).toBe(400);
+
+            expect(response.body.status).toBe('fail');
+
+            expect(response.body.error).toBe('Invalid password');
+            
+        });
+
+        it('should return a token on successful login', async () => {
+
+            const createdUser = await app().post('/api/v1/user/signup').send(user);
+
+            const {
+                status, 
+                message, 
+                data: {
+                    email, 
+                }
+            } = createdUser.body;
+
+            const body = {
+                email: email, 
+                password: user.password
+            };
+
+            const response = await app().post('/api/v1/user/login').send(body);
+
+            expect(response.status).toBe(200);
+
+            expect(response.body.status).toBe('success');
+
+            expect(response.body.data.token).toBeDefined();
+
+            expect(response.body.data.role).toBe('user');
+
+            expect(response.body.data.email).toBe(email);
+
+            expect(response.body.data.status).toBeDefined();
+
+            expect(response.body.data.firstName).toBe(user.firstName);
+
+            expect(response.body.data.lastName).toBe(user.lastName);
+            
+        });
+        
+    });
     
 });
