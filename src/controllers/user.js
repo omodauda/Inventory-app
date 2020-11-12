@@ -1,6 +1,8 @@
 const User = require('../models/user');
 const JWT = require('jsonwebtoken');
 const sendMail = require('../helpers/email');
+const Auth = require('../models/auth');
+const generate_token = require('../helpers/token_generator');
 
 // Signs user with JWT
 const signToken = (user) => {
@@ -24,8 +26,8 @@ module.exports = {
             const { email, password, firstName, lastName, role } = req.body;
 
             //check if user with the same email already exist
-            const existingUser = await User.findOne({'local.email': email});
-            const existingGoogleAccount = await User.findOne({'google.email': email});
+            const existingUser = await Auth.findOne({'local.email': email});
+            const existingGoogleAccount = await Auth.findOne({'google.email': email});
 
             if(existingUser || existingGoogleAccount){
                 return res
@@ -36,15 +38,15 @@ module.exports = {
                         message: `E-mail ${email} already in use`
                     }
                 })
-            }
+            };
 
-            // Generate a confirmation token, save it in the database
-            const confirmToken = Math.floor(10000 + Math.random() * 9000);
-            //set token expiration time to 10mins
-            const tokenExpiration = new Date(Date.now() + 10 * 60 * 1000)
-           
+            //generate confirmation token
+            const confirm_token_data = await generate_token();
+            
+            const {confirmToken, tokenExpiration} = confirm_token_data;
+
             //create the user object
-            const user = new User({
+            const user = new Auth({
                 method: "local",
                 local: {
                     email,
@@ -55,11 +57,22 @@ module.exports = {
                     token: confirmToken,
                     tokenExpiration
                 },
+                // firstName,
+                // lastName
+            });
+
+            const userProfile = new User({
+                userId: user,
+                email,
                 firstName,
                 lastName
             });
+
             //save the new user doc
             await user.save();
+
+            //save user profile
+            await userProfile.save();
 
             //send confirmationToken to user e-mail
             const recipient = user.local.email;
@@ -81,8 +94,8 @@ module.exports = {
                     confirmationToken: confirmToken,
                     role: user.role,
                     email: user.local.email,
-                    firstName,
-                    lastName
+                    firstName: userProfile.firstName,
+                    lastName: userProfile.lastName
                 }
             });
         }
@@ -102,7 +115,7 @@ module.exports = {
         try{
             const {email, confirmToken} = req.body;
 
-            const user = await User.findOne({'local.email': email});
+            const user = await Auth.findOne({'local.email': email});
     
             const {confirmationToken: {token, tokenExpiration}} = user;
             //get the current time
@@ -137,7 +150,7 @@ module.exports = {
                 })
             } else {  //if both conditions are met, verify user and set token & expiration fields to null
 
-                await User.findOneAndUpdate(
+                await Auth.findOneAndUpdate(
                     {'local.email': email}, 
                     {status: "Verified", confirmationToken: {token: null, tokenExpiration: null}}
                 );
@@ -162,9 +175,15 @@ module.exports = {
     },
 
     login: async (req, res) => {
+        
         try{
             const token =  signToken(req.user);
-            const {local: {email}, role, firstName, lastName, status} = req.user;
+
+            const {local: {email}, role, status, id} = req.user;
+
+            const user = await User.find({'userId': id});
+
+            const [{firstName, lastName}] = user;
             
             res
             .status(200)

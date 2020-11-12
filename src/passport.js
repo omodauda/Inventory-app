@@ -3,8 +3,8 @@ const JwtStrategy = require('passport-jwt').Strategy;
 const {ExtractJwt} = require('passport-jwt');
 const LocalStrategy = require('passport-local').Strategy;
 const GoogleStrategy = require('passport-google-token').Strategy;
+const Auth = require('./models/auth');
 const User = require('./models/user');
-
 
 passport.use(new JwtStrategy(
     {
@@ -14,7 +14,7 @@ passport.use(new JwtStrategy(
     async (payload, done) => {
         //find user specified in the token
         try{
-            const user = await User.findById(payload.sub);
+            const user = await Auth.findById(payload.sub);
             //if !user return
             if(!user){
                 return done(null, false);
@@ -35,7 +35,7 @@ passport.use( new LocalStrategy(
     }, 
     async(email, password, done) => {
         try{
-            const user = await User.findOne({'local.email': email});
+            const user = await Auth.findOne({'local.email': email});
 
             if(!user){
                 return done(new Error('Invalid email'), false);
@@ -68,7 +68,7 @@ passport.use(
             const {id, email, verified_email, given_name: firstName, family_name: lastName} = profile._json;
 
             //check if user already exist. If yes, return the user
-            const existingUser = await User.findOne({'google.id': profile.id});
+            const existingUser = await Auth.findOne({'google.id': profile.id});
             if(existingUser){
                 return done(null, existingUser)
             }
@@ -77,18 +77,28 @@ passport.use(
             const status = verified_email ? "Verified" : "Not verified";
 
             //create user object
-            const user = new User({
+            const user = new Auth({
                 method: 'google',
                 google: {
                     id,
                     email
                 },
                 status,
+                // firstName,
+                // lastName
+            });
+
+            const userProfile = new User({
+                userId: user,
+                email,
                 firstName,
                 lastName
             });
             //save user doc
             await user.save();
+
+            //save user profile
+            await userProfile.save();
             //return saved user
             return done(null, user);
         }
