@@ -246,7 +246,7 @@ module.exports = {
         try{
             const {id} = req.user
             //dynamically update user details.
-            await User.findByIdAndUpdate(id, req.body);
+            await User.findOneAndUpdate({userId: id}, req.body);
 
             res
             .status(200)

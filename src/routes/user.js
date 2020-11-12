@@ -29,7 +29,7 @@ router
     .post(passportGoogle, googleOauth);
 
 router
-    .route('/update')
+    .route("/update")
     .patch(validateBody(schemas.updateSchema), passportJWT, updateUser)
 
 
