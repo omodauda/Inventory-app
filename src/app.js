@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 require('./database/db');
 const userRoutes = require('./routes/user');
+const categoryRoutes = require('./routes/category');
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.get("/api/v1", (req, res) => {
 
 //endpoints
 app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/category", categoryRoutes);
 
 app.use((err, req, res, next) => {
     res.status(400).json({
