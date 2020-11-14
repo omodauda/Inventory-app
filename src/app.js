@@ -1,8 +1,11 @@
 require('dotenv').config();
 const express = require('express');
 require('./database/db');
+
+//Routes
 const userRoutes = require('./routes/user');
 const categoryRoutes = require('./routes/category');
+const subCategoryRoutes = require('./routes/subCategory');
 
 const app = express();
 
@@ -21,6 +24,7 @@ app.get("/api/v1", (req, res) => {
 //endpoints
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/category", categoryRoutes);
+app.use("/api/v1/subcategory", subCategoryRoutes);
 
 app.use((err, req, res, next) => {
     res.status(400).json({

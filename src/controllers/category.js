@@ -46,5 +46,40 @@ module.exports = {
                 }
             })
         }
+    },
+
+    getAllCategories: async (req, res) => {
+
+        try{
+
+            const categories = await Category.find().populate('subCategories');
+
+            if(!categories){
+                res
+                .status(200)
+                .json({
+                    status: "success",
+                    message: "category list is currently empty"
+                });
+            } else {
+                res
+                .status(200)
+                .json({
+                    status: 'success',
+                    data: {
+                        categories
+                    }
+                })
+            }
+        }catch(error){
+            res
+            .status(400)
+            .json({
+                status: "fail",
+                error: {
+                    message: error.message
+                }
+            })
+        }
     }
 }
