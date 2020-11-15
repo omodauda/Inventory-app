@@ -83,15 +83,15 @@ module.exports = {
     },
     verifyPost: async(req, res) => {
         try{
+        
+            const {id} = req.params;
 
-        }catch(error){
-            res
-            .status(400)
-            .json({
-                error: {
-                    message: error.message
-                }
-            })
+            const data = await Mobile_Phones.findByIdAndUpdate(id, {status: "Active"}, {new: true});
+
+            Success(res, data)
+
+        }catch(err){
+            Error(res, err)
         }
     }
 }
