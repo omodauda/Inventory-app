@@ -8,10 +8,11 @@ const categorySchema = new schema({
         unique: true,
         trim: true
     },
-    subCategories: [{
+    posts: [{
         type: schema.Types.ObjectId,
-        ref: 'SubCategory'
-    }]
+        refPath: 'onModel'
+    }],
+    onModel: [String]
 
 }, {timestamps: true});
 
