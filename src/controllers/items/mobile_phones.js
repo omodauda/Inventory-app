@@ -2,6 +2,8 @@ const Mobile_Phones = require('../../models/items/mobile_phones');
 const Category = require('../../models/category');
 const User = require('../../models/user');
 
+const {Success, Error, Message} = require('../../middlewares/response');
+
 module.exports = {
 
     create: async(req, res) => {
@@ -45,24 +47,43 @@ module.exports = {
     },
     getAllMobilePhones: async(req, res) => {
         try{
-            const data = await Mobile_Phones.find({});
+            const data = await Mobile_Phones.find();
 
             if(data.length === 0){
-                res
-                .status(400)
-                .json({
-                    status: 'success',
-                    message: "empty list"
-                })
+                Message(res, "empty list")
+                // res
+                // .status(400)
+                // .json({
+                //     status: 'success',
+                //     message: "empty list"
+                // })
             } else{
-               res
-                .status(200)
-                .json({
-                    status: "success",
-                    count: data.length,
-                    data
-                });
+                Success(res, data)
+            //    res
+            //     .status(200)
+            //     .json({
+            //         status: "success",
+            //         count: data.length,
+            //         data
+            //     });
             }
+        }catch(err){
+            Error(res, err);
+            // res
+            // .status(400)
+            // .json({
+            //     error: {
+            //         message: error.message
+            //     }
+            // })
+        }
+    },
+    getMobilePhoneById: async(req, res) => {
+
+    },
+    verifyPost: async(req, res) => {
+        try{
+
         }catch(error){
             res
             .status(400)
@@ -72,8 +93,5 @@ module.exports = {
                 }
             })
         }
-    },
-    getMobilePhoneById: async(req, res) => {
-
     }
 }
