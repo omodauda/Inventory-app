@@ -1,14 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
-const {createSubcategory} = require('../controllers/subCategory');
+const {create} = require('../../controllers/items/tablets');
 
 router
     .route("/create")
-    .post(createSubcategory)
-
-
-
-
+    .post(create)
 
 module.exports = router;
