@@ -59,6 +59,7 @@ module.exports = {
                 .status(200)
                 .json({
                     status: "success",
+                    count: data.length,
                     data
                 });
             }

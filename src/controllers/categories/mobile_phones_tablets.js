@@ -6,11 +6,11 @@ module.exports = {
         const categoryId = "5fb132be4473e32274b208a5"
         try{
             const data = await Category.findById(categoryId).populate({path: 'posts'});
-
             res
             .status(200)
             .json({
                 status: "success",
+                count: data.posts.length,
                 data
             })
         }catch(error){

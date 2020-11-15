@@ -46,6 +46,7 @@ const tabletSchema = new schema({
     },
     status: {
         type: String,
+        default: "Reviewing",
         enum: ["Active", "Reviewing", "Closed", "Declined"]
     },
     promoted: {

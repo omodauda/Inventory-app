@@ -118,4 +118,4 @@ dist
 .pnp.*
 
 # Mock data file
-.data.js
+data.js

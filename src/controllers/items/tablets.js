@@ -38,5 +38,35 @@ module.exports = {
                 }
             })
         }
+    },
+    getAllTablets: async(req, res) => {
+        try{
+            const data = await Tablet.find();
+
+            if(data.length === 0){
+                res
+                .status(400)
+                .json({
+                    status: 'success',
+                    message: "No item in tablets"
+                })
+            } else{
+               res
+                .status(200)
+                .json({
+                    status: "success",
+                    count: data.length,
+                    data
+                });
+            }
+        }catch(error){
+            res
+            .status(400)
+            .json({
+                error: {
+                    message: error.message
+                }
+            })
+        }
     }
 }
