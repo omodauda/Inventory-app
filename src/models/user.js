@@ -29,6 +29,13 @@ const userSchema = new schema ({
     },
     location: {
         type: String
+    },
+    posts: [{
+        type: schema.Types.ObjectId,
+        refPath: 'onModel'
+    }],
+    onModel: {
+        type: [String]
     }
 }, {timestamps: true});
 

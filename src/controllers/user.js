@@ -265,6 +265,33 @@ module.exports = {
                 }
             })
         }
+    },
+    profile: async (req, res) => {
+        try{
+            const {userId} = req.body;
+
+            const profile = await User.findById(userId).populate({path: 'posts'});
+            
+            if(!profile){
+                return res
+                .status(400)
+                .json({
+                    status: "fail",
+                    message: "user with id not found"
+                });
+            } else {
+                res
+                .status(200)
+                .json({
+                    status: "success",
+                    data: {
+                        profile
+                    }
+                })
+            }
+        } catch(error){
+            res.send(error)
+        }
     }
     
 };

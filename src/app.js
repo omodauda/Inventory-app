@@ -5,7 +5,10 @@ require('./database/db');
 //Routes
 const userRoutes = require('./routes/user');
 const categoryRoutes = require('./routes/category');
-const subCategoryRoutes = require('./routes/subCategory');
+const mobileTablets = require('./routes/categories/mobile_phones_tablets');
+const mobile = require('./routes/items/mobile_phones');
+const tablet = require('./routes/items/tablet');
+
 
 const app = express();
 
@@ -24,7 +27,9 @@ app.get("/api/v1", (req, res) => {
 //endpoints
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/category", categoryRoutes);
-app.use("/api/v1/subcategory", subCategoryRoutes);
+app.use("/api/v1/mobile-phones-tablets", mobileTablets);
+app.use("/api/v1/mobile-phones", mobile);
+app.use("/api/v1/tablets", tablet);
 
 app.use((err, req, res, next) => {
     res.status(400).json({

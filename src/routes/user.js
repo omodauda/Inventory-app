@@ -10,7 +10,7 @@ const {validateBody, schemas} = require('../helpers/validator');
 const accessControl = require('../middlewares/accessControl');
 
 
-const {signUp, login, googleOauth, verifyUser, updateUser} = require('../controllers/user');
+const {signUp, login, googleOauth, verifyUser, updateUser, profile} = require('../controllers/user');
 
 router
     .route("/signup")
@@ -32,6 +32,8 @@ router
     .route("/update")
     .patch(validateBody(schemas.updateSchema), passportJWT, updateUser)
 
-
+router
+    .route("/profile")
+    .get(profile)
     
 module.exports = router;
