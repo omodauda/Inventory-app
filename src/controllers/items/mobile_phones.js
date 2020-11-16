@@ -2,8 +2,6 @@ const Mobile_Phones = require('../../models/items/mobile_phones');
 const Category = require('../../models/category');
 const User = require('../../models/user');
 
-const {Success, Error, Message} = require('../../middlewares/response');
-
 module.exports = {
 
     create: async(req, res) => {
@@ -50,32 +48,29 @@ module.exports = {
             const data = await Mobile_Phones.find();
 
             if(data.length === 0){
-                Message(res, "empty list")
-                // res
-                // .status(400)
-                // .json({
-                //     status: 'success',
-                //     message: "empty list"
-                // })
+               res
+                .status(400)
+                .json({
+                    status: 'success',
+                    message: "empty list"
+                })
             } else{
-                Success(res, data)
-            //    res
-            //     .status(200)
-            //     .json({
-            //         status: "success",
-            //         count: data.length,
-            //         data
-            //     });
+               res
+                .status(200)
+                .json({
+                    status: "success",
+                    count: data.length,
+                    data
+                });
             }
         }catch(err){
-            Error(res, err);
-            // res
-            // .status(400)
-            // .json({
-            //     error: {
-            //         message: error.message
-            //     }
-            // })
+            res
+            .status(400)
+            .json({
+                error: {
+                    message: error.message
+                }
+            })
         }
     },
     getMobilePhoneById: async(req, res) => {
@@ -86,12 +81,38 @@ module.exports = {
         
             const {id} = req.params;
 
+            const find = await Mobile_Phones.findById(id);
+
+            if(!find){
+                res
+                .status(400)
+                .json({
+                    status: "fail",
+                    message: `item with id ${id} not found`
+                })
+            }
+
             const data = await Mobile_Phones.findByIdAndUpdate(id, {status: "Active"}, {new: true});
 
-            Success(res, data)
+            res
+            .status(200)
+            .json({
+                status: "success",
+                message: "verification successful",
+                data
+            })
 
-        }catch(err){
-            Error(res, err)
+            
+
+        }catch(error){
+            res
+            .status(400)
+            .json({
+                status: "fail",
+                error: {
+                    message: error.message
+                }
+            })
         }
     }
 }
