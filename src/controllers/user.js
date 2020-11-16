@@ -4,6 +4,10 @@ const sendMail = require('../helpers/email');
 const Auth = require('../models/auth');
 const generate_token = require('../helpers/token_generator');
 
+
+//image upload
+const cloudinary = require('../helpers/cloudinary');
+
 // Signs user with JWT
 const signToken = (user) => {
     return JWT.sign({
@@ -57,8 +61,6 @@ module.exports = {
                     token: confirmToken,
                     tokenExpiration
                 },
-                // firstName,
-                // lastName
             });
 
             const userProfile = new User({
@@ -209,7 +211,6 @@ module.exports = {
                 }
             })
         }
-
     },
 
     googleOauth: async (req, res) => {
@@ -273,7 +274,7 @@ module.exports = {
             const profile = await User.findById(userId).populate({path: 'posts'});
             
             if(!profile){
-                return res
+                res
                 .status(400)
                 .json({
                     status: "fail",
@@ -291,6 +292,65 @@ module.exports = {
             }
         } catch(error){
             res.send(error)
+        }
+    },
+    uploadImage: async(req, res) => {
+        try{
+
+            //return if no image selected
+            if (!req.file)
+            res.status(400).json({
+            status: 'fail',
+            error: 'No image found'
+            });
+
+            //get authId from req
+            const {id} = req.user;
+            //find user profile with authId 
+            const userProfile = await User.findOne({userId: id});
+            //return if user profile not found
+            if(!userProfile){
+                res
+                .status(400)
+                .json({
+                    status: "fail",
+                    message: "User profile not found"
+                })
+            }
+            //else upload image to cloudinary
+            const image = await cloudinary.uploader.upload(req.file.path, {
+                folder: 'sell-it/profile_photo', 
+                public_id: `userid=${id}`
+            });
+            //return if upload fails
+            if(!image){
+                res
+                .status(500)
+                .json({
+                    status: "fail",
+                    message: "Image upload failed, pls try again"
+                })
+            }
+            //if upload is successful, set user avatar
+            await User.findOneAndUpdate(
+                {userId: id}, 
+                {avatar: {image: image.secure_url, cloudinary_id: image.public_id}}
+            );
+            res
+            .status(200)
+            .json({
+                status: "success",
+                message: 'Image successfully uploaded'
+            })
+        }catch(error){
+            res
+            .status(400)
+            .json({
+                status: "fail",
+                error: {
+                    message: error.message
+                }
+            })
         }
     }
     

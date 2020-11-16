@@ -23,6 +23,14 @@ const userSchema = new schema ({
         required: true,
         trim: true
     },
+    avatar:{
+        image: {
+            type: String
+        },
+        cloudinary_id: {
+            type: String
+        }
+    },
     phone: {
         type: String,
         trim: true

@@ -10,7 +10,8 @@ const {validateBody, schemas} = require('../helpers/validator');
 const accessControl = require('../middlewares/accessControl');
 
 
-const {signUp, login, googleOauth, verifyUser, updateUser, profile} = require('../controllers/user');
+const {signUp, login, googleOauth, verifyUser, updateUser, profile, uploadImage} = require('../controllers/user');
+const upload = require('../helpers/multer');
 
 router
     .route("/signup")
@@ -35,5 +36,9 @@ router
 router
     .route("/profile")
     .get(profile)
+
+router
+    .route("/profile/upload_image")
+    .post(passportJWT, upload.single('image'), uploadImage)
     
 module.exports = router;
