@@ -68,5 +68,39 @@ module.exports = {
                 }
             })
         }
+    },
+    verifyPost: async(req, res) => {
+        try{
+            const {id} = req.params;
+
+            const find = await Tablet.findById(id);
+
+            if(!find){
+               return res
+               .status(400)
+               .json({
+                   status: "fail",
+                   message: `item with id ${id} not found`
+               })
+            }
+
+            const data = await Tablet.findByIdAndUpdate(id, {status: "Active"}, {new: true});
+
+           res
+           .status(200)
+           .json({
+               status: "success",
+               message: "verification successful",
+               data
+           });
+        }catch(error){
+            res
+            .status(400)
+            .json({
+                error: {
+                    message: error.message
+                }
+            })
+        }
     }
 }
