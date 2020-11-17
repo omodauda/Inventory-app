@@ -13,6 +13,13 @@ const mobilePhoneSchema = new schema({
         ref: "User",
         required: true
     },
+    images: [{
+        type: String,
+        required: true
+    }],
+    location: {
+        type: String
+    },
     brand: {
         type: String,
         required: true,

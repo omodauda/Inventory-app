@@ -267,7 +267,7 @@ module.exports = {
             })
         }
     },
-    profile: async (req, res) => {
+    profile: async (req, res) => {  //refactor
         try{
             const {userId} = req.body;
 
