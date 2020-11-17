@@ -13,10 +13,14 @@ const mobilePhoneSchema = new schema({
         ref: "User",
         required: true
     },
-    images: [{
-        type: String,
-        required: true
-    }],
+    itemImages: {
+        images: [{
+            type: String
+        }],
+        cloudinary_ids: [{
+            type: String
+        }]
+    },
     location: {
         type: String
     },
@@ -62,10 +66,10 @@ const mobilePhoneSchema = new schema({
         default: "Reviewing",
         enum: ["Active", "Reviewing", "Closed", "Declined"]
     },
-    promoted: {
-        type: Boolean,
-        required: true
-    }
+    // promoted: {
+    //     type: Boolean,
+    //     required: true
+    // }
 
 }, {timestamps: true});
 
