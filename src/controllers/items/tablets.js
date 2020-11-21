@@ -2,32 +2,73 @@ const Tablet = require('../../models/items/tablets');
 const User = require('../../models/user');
 const Category = require('../../models/category');
 
+const cloudinary = require('../../helpers/cloudinary');
+
 module.exports = {
     create: async(req, res) => {
+        //if request doesnt contain image files, return
+        if(!req.files){
+            res
+            .status(400)
+            .json({
+                status: "fail",
+                message: "No image found"
+            });  
+        };
+
         try{
-            const {owner, name} = req.body;
-            const category = "5fb132be4473e32274b208a5"
+            const {brand} = req.body;
+            const category = "5fb132be4473e32274b208a5";
+            const owner = await User.findOne({userId: req.user.id});
 
             const tablet = new Tablet({
                 category,
                 owner,
-                name
+                brand
             });
 
             await tablet.save();
 
+            /*upload images to cloudinary & save the urls to doc. 
+                cloudinary doesn't support uploading multiple image files 
+                at once.
+                solved by mapping through the files and uploading them one after the other
+            */
+            req.files.map(file => {
+
+                let index= req.files.indexOf(file);
+
+                const upload = async() => {
+                    const images = await cloudinary.uploader.upload(file.path, {
+                        folder: 'sell-it/product_image',
+                        public_id: `productId=${tablet._id}_image${index}`
+                    });
+
+                    //push uploaded image to item doc.
+                    await Tablet.findByIdAndUpdate(
+                        tablet._id, 
+                        {$push: {"itemImages.images": images.secure_url, "itemImages.cloudinary_ids": images.public_id}}
+                    );
+                } 
+                upload();
+            });
+            //save item in category
             await Category.findByIdAndUpdate(category, {$push: {posts: tablet._id}});
 
-            await User.findByIdAndUpdate(owner, { $push: {posts: tablet._id, onModel: 'Tablet'}} );
+            //save in user profile
+            const user = await User.findById(owner._id);
+
+            if(user.onModel.includes('Tablet')){
+                await User.findByIdAndUpdate(owner._id, { $push: {posts: tablet._id}} );
+            }else{
+                await User.findByIdAndUpdate(owner._id, { $push: {posts: tablet._id, onModel: 'Tablet'}} );
+            }
 
             res
             .status(200)
             .json({
                 status: "success",
-                message: "post successfully created",
-                data: {
-                    tablet
-                }
+                message: "post successfully created"
             });
         } catch(error){
             res

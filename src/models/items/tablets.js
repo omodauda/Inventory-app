@@ -12,6 +12,14 @@ const tabletSchema = new schema({
         ref: "User",
         required: true
     },
+    itemImages: {
+        images: [{
+            type: String
+        }],
+        cloudinary_ids: [{
+            type: String
+        }]
+    },
     brand: {
         type: String,
         required: true
@@ -49,10 +57,10 @@ const tabletSchema = new schema({
         default: "Reviewing",
         enum: ["Active", "Reviewing", "Closed", "Declined"]
     },
-    promoted: {
-        type: Boolean,
-        required: true
-    }
+    // promoted: {
+    //     type: Boolean,
+    //     required: true
+    // }
 }, {timestamps: true});
 
 const Tablet = mongoose.model("Tablet", tabletSchema);
