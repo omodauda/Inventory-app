@@ -1,20 +1,34 @@
-const Category = require('../../models/category');
+const Ad = require('../../models/ad');
+const publicResponse = require('../../helpers/response');
 
 module.exports = {
 
-    mobile_phones_tablets: async(req, res) => {
-        const categoryId = "5fb132be4473e32274b208a5"
+    getMobilePhonesAndTablets: async(req, res) => {
         try{
-            const data = await Category.findById(categoryId).populate({path: 'posts'});
-            res
-            .status(200)
-            .json({
-                status: "success",
-                count: data.posts.length,
-                data
-            })
+            const ads = await Ad.find(
+                {category: "Mobile Phones & Tablets"}
+            )
+            .populate({path: 'product', select: '-itemImages.cloudinary_ids -_id -owner -__v'})
+            .populate({path: 'user', select: '-_id -__v'});
+
+            if(ads.length === 0){
+                res
+                .status(200)
+                .json({
+                    status: "success",
+                    message: "No ads in Mobile Phones & Tablets"
+                });
+            }
+            publicResponse.product(ads, req, res);
         }catch(error){
-            res.send(error);
+            res
+            .status(400)
+            .json({
+                status: "fail",
+                error: {
+                    message: error.message
+                }
+            })
         }
     }
 }

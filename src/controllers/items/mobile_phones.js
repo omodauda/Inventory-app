@@ -1,6 +1,8 @@
 const Mobile_Phones = require('../../models/items/mobile_phones');
 const Category = require('../../models/category');
 const User = require('../../models/user');
+const Ad = require('../../models/ad');
+const publicResponse = require('../../helpers/response');
 
 const cloudinary = require('../../helpers/cloudinary');
 
@@ -19,8 +21,8 @@ module.exports = {
 
         try{
             const {brand, model} = req.body;
-            const category = "5fb132be4473e32274b208a5";
             const owner = await User.findOne({userId: req.user.id});
+            const category = "Mobile Phones & Tablets";
 
             //create item
             const phone = new Mobile_Phones({
@@ -31,6 +33,16 @@ module.exports = {
             });
 
             await phone.save();
+
+            const ad = new Ad({
+                category,
+                subCategory: "Mobile Phones",
+                user: owner._id,
+                product: phone._id,
+                onModel: 'Mobile_Phone'
+            });
+
+            await ad.save();
 
             /*upload images to cloudinary & save the urls to doc. 
                 cloudinary doesn't support uploading multiple image files 
@@ -55,17 +67,6 @@ module.exports = {
                 } 
                 upload();
             });
-            //save item to category
-            await Category.findByIdAndUpdate(category, {$push: {posts: phone._id}});
-
-            //save it in user profile
-            const user = await User.findById(owner._id);
-
-            if(user.onModel.includes('Mobile_Phone')){
-                await User.findByIdAndUpdate(owner._id, { $push: {posts: phone._id}} );
-            }else{
-                await User.findByIdAndUpdate(owner._id, { $push: {posts: phone._id, onModel: 'Mobile_Phone'}} );
-            }
 
             res
             .status(200)
@@ -86,7 +87,11 @@ module.exports = {
     },
     getAllMobilePhones: async(req, res) => {
         try{
-            const data = await Mobile_Phones.find();
+            const data = await Ad.find(
+                {subCategory: "Mobile Phones"}
+            )
+            .populate({path: 'product', select: '-itemImages.cloudinary_ids -_id -owner -__v'})
+            .populate({path: 'user', select: '-_id -__v'});
 
             if(data.length === 0){
                res
@@ -95,16 +100,9 @@ module.exports = {
                     status: 'success',
                     message: "empty list"
                 })
-            } else{
-               res
-                .status(200)
-                .json({
-                    status: "success",
-                    count: data.length,
-                    data
-                });
             }
-        }catch(err){
+            publicResponse.product(data, req, res);
+        }catch(error){
             res
             .status(400)
             .json({
@@ -114,9 +112,7 @@ module.exports = {
             })
         }
     },
-    getMobilePhoneById: async(req, res) => {
 
-    },
     verifyPost: async(req, res) => {
         try{
         

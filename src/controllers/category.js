@@ -6,7 +6,7 @@ module.exports = {
 
         try{
             //get the category name from req body
-            const {name, onModel} = req.body;
+            const {name} = req.body;
 
             //check if a category with the same name exists in the db
             const existingCategory = await Category.findOne({name});
@@ -24,8 +24,7 @@ module.exports = {
             }
             //else save category
             const category = new Category({
-                name,
-                onModel
+                name
             });
 
             await category.save();
@@ -53,9 +52,9 @@ module.exports = {
 
         try{
 
-            const categories = await Category.find().populate({path: 'posts', options: {sort: {name: -1}}});
+            const categories = await Category.find().populate('ads').populate('adsCount');
 
-            if(!categories){
+            if(categories.length ===0){
                 res
                 .status(200)
                 .json({

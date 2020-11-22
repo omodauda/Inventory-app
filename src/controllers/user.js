@@ -3,6 +3,8 @@ const JWT = require('jsonwebtoken');
 const sendMail = require('../helpers/email');
 const Auth = require('../models/auth');
 const generate_token = require('../helpers/token_generator');
+const Ad = require('../models/ad');
+const publicResponse = require('../helpers/response');
 
 
 //image upload
@@ -91,7 +93,7 @@ module.exports = {
             .json({
                 status: 'success',
                 message: "user created successfully!",
-                data: {
+                data: { //send userProfile.userId || user.id, it'll be passed as params to vivit user-page.
                     token,
                     confirmationToken: confirmToken,
                     role: user.role,
@@ -185,7 +187,7 @@ module.exports = {
 
             const user = await User.find({'userId': id});
 
-            const [{firstName, lastName}] = user;
+            const [{firstName, lastName, userId}] = user;
             
             res
             .status(200)
@@ -193,6 +195,7 @@ module.exports = {
                 status: 'success',
                 data: {
                     token,
+                    userId, //authId to pass as params to get to user-page
                     role,
                     status,
                     email,
@@ -267,11 +270,15 @@ module.exports = {
             })
         }
     },
-    profile: async (req, res) => {  //refactor
+    profile: async (req, res) => { 
         try{
-            const {userId} = req.body;
+            const {userId} = req.params;
 
-            const profile = await User.findById(userId).populate({path: 'posts'});
+            const profile = await User.findOne({userId});
+            const ads = await Ad.find(
+                {user: profile._id}
+            )
+            .populate({path: 'product', select: '-itemImages.cloudinary_ids'});
             
             if(!profile){
                 res
@@ -280,18 +287,18 @@ module.exports = {
                     status: "fail",
                     message: "user with id not found"
                 });
-            } else {
-                res
-                .status(200)
-                .json({
-                    status: "success",
-                    data: {
-                        profile
-                    }
-                })
-            }
+            } 
+            publicResponse.sellerPage(profile, ads, req, res);
+            
         } catch(error){
-            res.send(error)
+            res
+            .status(500)
+            .json({
+                status: 'fail',
+                error:{
+                    message: error.message
+                }
+            })
         }
     },
     uploadImage: async(req, res) => {

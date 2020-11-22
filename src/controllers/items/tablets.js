@@ -1,6 +1,8 @@
 const Tablet = require('../../models/items/tablets');
 const User = require('../../models/user');
 const Category = require('../../models/category');
+const Ad = require('../../models/ad');
+const publicResponse = require('../../helpers/response');
 
 const cloudinary = require('../../helpers/cloudinary');
 
@@ -18,16 +20,26 @@ module.exports = {
 
         try{
             const {brand} = req.body;
-            const category = "5fb132be4473e32274b208a5";
+            const category = "Mobile Phones & Tablets";
             const owner = await User.findOne({userId: req.user.id});
 
             const tablet = new Tablet({
                 category,
-                owner,
+                owner: owner._id,
                 brand
             });
 
             await tablet.save();
+
+            const ad = new Ad({
+                category,
+                subCategory: 'Tablets',
+                user: owner._id,
+                product: tablet._id,
+                onModel: 'Tablet'
+            });
+
+            await ad.save();
 
             /*upload images to cloudinary & save the urls to doc. 
                 cloudinary doesn't support uploading multiple image files 
@@ -52,18 +64,7 @@ module.exports = {
                 } 
                 upload();
             });
-            //save item in category
-            await Category.findByIdAndUpdate(category, {$push: {posts: tablet._id}});
-
-            //save in user profile
-            const user = await User.findById(owner._id);
-
-            if(user.onModel.includes('Tablet')){
-                await User.findByIdAndUpdate(owner._id, { $push: {posts: tablet._id}} );
-            }else{
-                await User.findByIdAndUpdate(owner._id, { $push: {posts: tablet._id, onModel: 'Tablet'}} );
-            }
-
+            
             res
             .status(200)
             .json({
@@ -82,7 +83,11 @@ module.exports = {
     },
     getAllTablets: async(req, res) => {
         try{
-            const data = await Tablet.find();
+            const data = await Ad.find(
+                {subCategory: 'Tablets'}
+            )
+            .populate({path: 'product', select: '-itemImages.cloudinary_ids -_id -owner -__v'})
+            .populate({path: 'user', select: '-_id -__v'});
 
             if(data.length === 0){
                 res
@@ -91,15 +96,8 @@ module.exports = {
                     status: 'success',
                     message: "No item in tablets"
                 })
-            } else{
-               res
-                .status(200)
-                .json({
-                    status: "success",
-                    count: data.length,
-                    data
-                });
             }
+            publicResponse.product(data, req, res);
         }catch(error){
             res
             .status(400)
