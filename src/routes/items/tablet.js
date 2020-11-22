@@ -11,7 +11,7 @@ const upload = require('../../helpers/multer');
 router
     .route("/")
     .post(passportJWT, upload.array('images'), create)
-    .get(getAllTablets)
+    .get(passportJWT, getAllTablets)
 
 router
     .route("/verify/:id")

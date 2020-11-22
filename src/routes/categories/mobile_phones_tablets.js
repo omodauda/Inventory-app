@@ -1,11 +1,14 @@
 const express = require('express');
 const router = express.Router();
+const passport = require('passport');
+const passportConf = require('../../passport');
+const passportJWT = passport.authenticate("jwt", {session:false});
 
-const {mobile_phones_tablets} = require('../../controllers/categories/mobile_phones_tablets');
+const {getMobilePhonesAndTablets} = require('../../controllers/categories/mobile_phones_tablets');
 
 router
     .route("/")
-    .get(mobile_phones_tablets)
+    .get(passportJWT, getMobilePhonesAndTablets)
 
 
 

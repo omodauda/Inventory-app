@@ -34,8 +34,8 @@ router
     .patch(validateBody(schemas.updateSchema), passportJWT, updateUser)
 
 router
-    .route("/profile")
-    .get(profile)
+    .route("/profile/:userId")
+    .get(passportJWT, profile)
 
 router
     .route("/profile/upload_image")
