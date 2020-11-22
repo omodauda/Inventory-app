@@ -3,8 +3,8 @@ const schema = mongoose.Schema;
 
 const tabletSchema = new schema({
     category: {
-        type: schema.Types.ObjectId,
-        ref: "Category",
+        type: String,
+        // ref: "Category",
         required: true
     },
     owner: {

@@ -7,14 +7,24 @@ const categorySchema = new schema({
         required: true,
         unique: true,
         trim: true
-    },
-    posts: [{
-        type: schema.Types.ObjectId,
-        refPath: 'onModel'
-    }],
-    onModel: [String]
-
+    }
 }, {timestamps: true});
+
+categorySchema.virtual('ads', {
+    ref: 'Ad',
+    localField: 'name',
+    foreignField: 'category',
+    // count: true
+});
+
+categorySchema.virtual('adsCount', {
+    ref: 'Ad',
+    localField: 'name',
+    foreignField: 'category',
+    count: true
+});
+
+categorySchema.set('toJSON', {virtuals: true})
 
 const Category = mongoose.model('Category', categorySchema);
 

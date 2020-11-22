@@ -4,8 +4,8 @@ const schema = mongoose.Schema;
 const mobilePhoneSchema = new schema({
 
     category: {
-        type: schema.Types.ObjectId,
-        ref: "Category",
+        type: String,
+        // ref: "Category",
         required: true
     },
     owner: {
