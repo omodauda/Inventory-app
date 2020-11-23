@@ -70,6 +70,9 @@ const mobilePhoneSchema = new schema({
         status: {
             type: Boolean
         },
+        ref: {
+            type: String
+        },
         type:{
             type: String,
             enum: ["Top-week", "Top-month", "Boost-premium"]

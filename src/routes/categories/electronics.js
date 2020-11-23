@@ -11,5 +11,4 @@ router
     .get(passportJWT, getElectronics)
 
 
-
 module.exports = router;
