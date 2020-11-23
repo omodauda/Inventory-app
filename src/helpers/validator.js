@@ -43,6 +43,11 @@ module.exports = {
         location: Joi.string(),
         firstName: Joi.string(),
         lastName: Joi.string()
+      }),
+
+      promoteProductSchema: Joi.object().keys({
+        email: Joi.string().email().required(),
+        plan_code: Joi.string().required()
       })
     }
 }
