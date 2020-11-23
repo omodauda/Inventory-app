@@ -2,11 +2,10 @@ const Ad = require('../../models/ad');
 const publicResponse = require('../../helpers/response');
 
 module.exports = {
-
-    getMobilePhonesAndTablets: async(req, res) => {
+    getElectronics: async(req, res) => {
         try{
             const ads = await Ad.find(
-                {category: "Mobile Phones & Tablets"}
+                {category: "Electronics"}
             ).sort('-createdAt')
             .populate({path: 'product', select: '-itemImages.cloudinary_ids -_id -owner -__v'})
             .populate({path: 'user', select: '-_id -__v'});
@@ -16,7 +15,7 @@ module.exports = {
                 .status(200)
                 .json({
                     status: "success",
-                    message: "No ads in Mobile Phones & Tablets"
+                    message: "No ads in Electronics"
                 });
             }
             publicResponse.product(ads, req, res);
