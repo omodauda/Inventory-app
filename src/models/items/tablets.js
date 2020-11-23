@@ -57,10 +57,21 @@ const tabletSchema = new schema({
         default: "Reviewing",
         enum: ["Active", "Reviewing", "Closed", "Declined"]
     },
-    // promoted: {
-    //     type: Boolean,
-    //     required: true
-    // }
+    promotion: {
+        status: {
+            type: Boolean
+        },
+        type:{
+            type: String,
+            enum: ["Top-week", "Top-month", "Boost-premium"]
+        },
+        startDate: {
+            type: Date
+        },
+        dueDate:{
+            type: Date
+        }
+    }
 }, {timestamps: true});
 
 const Tablet = mongoose.model("Tablet", tabletSchema);

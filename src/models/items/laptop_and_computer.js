@@ -77,6 +77,21 @@ const laptopAndComputerSchema = new schema({
         default: "Reviewing",
         enum: ["Active", "Reviewing", "Closed", "Declined"]
     },
+    promotion: {
+        status: {
+            type: Boolean
+        },
+        type:{
+            type: String,
+            enum: ["Top-week", "Top-month", "Boost-premium"]
+        },
+        startDate: {
+            type: Date
+        },
+        dueDate:{
+            type: Date
+        }
+    }
 },{timestamps: true});
 
 const LaptopAndComputer = mongoose.model('LaptopAndComputer', laptopAndComputerSchema);
