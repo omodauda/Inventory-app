@@ -1,13 +1,11 @@
-const Mobile_Phones = require('../../models/items/mobile_phones');
-const Category = require('../../models/category');
-const User = require('../../models/user');
+const LaptopAndComputer = require('../../models/items/laptop_and_computer');
 const Ad = require('../../models/ad');
+const User = require('../../models/user');
 const publicResponse = require('../../helpers/response');
 
 const cloudinary = require('../../helpers/cloudinary');
 
 module.exports = {
-
     create: async(req, res) => {
         //if request doesnt contain image files, return
         if(!req.files){
@@ -20,28 +18,27 @@ module.exports = {
         };
 
         try{
-            const {brand, model} = req.body;
+            const {type, brand, model} = req.body;
             const owner = await User.findOne({userId: req.user.id});
-            const category = "Mobile Phones & Tablets";
+            const category = "Electronics";
 
             //create item
-            const phone = new Mobile_Phones({
+            const item = new LaptopAndComputer({
                 category,
                 owner,
+                type,
                 brand,
                 model
             });
-
-            await phone.save();
-
+            await item.save();
+            //create the ad
             const ad = new Ad({
                 category,
-                subCategory: "Mobile Phones",
+                subCategory: "Laptops & Computers",
                 user: owner._id,
-                product: phone._id,
-                onModel: 'Mobile_Phone'
+                product: item._id,
+                onModel: 'LaptopAndComputer'
             });
-
             await ad.save();
 
             /*upload images to cloudinary & save the urls to doc. 
@@ -56,12 +53,12 @@ module.exports = {
                 const upload = async() => {
                     const images = await cloudinary.uploader.upload(file.path, {
                         folder: 'sell-it/product_image',
-                        public_id: `productId=${phone._id}_image${index}`
+                        public_id: `productId=${item._id}_image${index}`
                     });
 
                     //push uploaded image to item doc.
-                    await Mobile_Phones.findByIdAndUpdate(
-                        phone._id, 
+                    await LaptopAndComputer.findByIdAndUpdate(
+                        item._id, 
                         {$push: {"itemImages.images": images.secure_url, "itemImages.cloudinary_ids": images.public_id}}
                     );
                 } 
@@ -85,21 +82,21 @@ module.exports = {
             })
         }
     },
-    getAllMobilePhones: async(req, res) => {
+    getAll: async(req, res) => {
         try{
             const data = await Ad.find(
-                {subCategory: "Mobile Phones"}
+                {subCategory: "Laptops & Computers"}
             )
             .populate({path: 'product', select: '-itemImages.cloudinary_ids -_id -owner -__v'})
             .populate({path: 'user', select: '-_id -__v'});
 
             if(data.length === 0){
-               res
+                res
                 .status(400)
                 .json({
                     status: 'success',
                     message: "empty list"
-                })
+                });
             }
             publicResponse.product(data, req, res);
         }catch(error){
@@ -112,13 +109,11 @@ module.exports = {
             })
         }
     },
-
     verifyPost: async(req, res) => {
         try{
-        
             const {id} = req.params;
 
-            const find = await Mobile_Phones.findById(id);
+            const find = await LaptopAndComputer.findById(id);
 
             if(!find){
                 res
@@ -129,7 +124,7 @@ module.exports = {
                 })
             }
 
-            const data = await Mobile_Phones.findByIdAndUpdate(id, {status: "Active"}, {new: true});
+            const data = await LaptopAndComputer.findByIdAndUpdate(id, {status: "Active"}, {new: true});
 
             res
             .status(200)
@@ -137,7 +132,7 @@ module.exports = {
                 status: "success",
                 message: "verification successful",
                 data
-            });
+            })
         }catch(error){
             res
             .status(400)

@@ -8,6 +8,7 @@ const categoryRoutes = require('./routes/category');
 const mobileTablets = require('./routes/categories/mobile_phones_tablets');
 const mobile = require('./routes/items/mobile_phones');
 const tablet = require('./routes/items/tablet');
+const laptopAndComputers = require('./routes/items/laptops_and_computers');
 
 
 const app = express();
@@ -30,6 +31,7 @@ app.use("/api/v1/category", categoryRoutes);
 app.use("/api/v1/mobile-phones-tablets", mobileTablets);
 app.use("/api/v1/mobile-phones", mobile);
 app.use("/api/v1/tablets", tablet);
+app.use("/api/v1/computers-and-laptops", laptopAndComputers);
 
 app.use((err, req, res, next) => {
     res.status(400).json({
