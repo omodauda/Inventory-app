@@ -1,10 +1,10 @@
 const Mobile_Phones = require('../../models/items/mobile_phones');
-const Category = require('../../models/category');
 const User = require('../../models/user');
 const Ad = require('../../models/ad');
 const publicResponse = require('../../helpers/response');
 
 const cloudinary = require('../../helpers/cloudinary');
+const {initPayment} = require('../../helpers/payment');
 
 module.exports = {
 
@@ -94,7 +94,7 @@ module.exports = {
             .populate({path: 'user', select: '-_id -__v'});
 
             if(data.length === 0){
-               res
+                res
                 .status(400)
                 .json({
                     status: 'success',
@@ -121,7 +121,7 @@ module.exports = {
             const find = await Mobile_Phones.findById(id);
 
             if(!find){
-                res
+                return res
                 .status(400)
                 .json({
                     status: "fail",
@@ -145,6 +145,57 @@ module.exports = {
                 status: "fail",
                 error: {
                     message: error.message
+                }
+            })
+        }
+    },
+    promotePost: async(req, res) => {
+        const {id} = req.params;
+        const {email, plan_code} = req.body;
+        // const email = 'omodauda.dl@gmail.com';
+        // const plan_code = 'PLN_trj2pmmxd5dajkz'
+        
+        try{
+            //get user sending request
+            const user = await User.findOne({userId: req.user.id});
+            //get the item
+            const phone = await Mobile_Phones.findById(id);
+            // console.log('user.id', user._id);
+            // console.log('item.owner', phone.owner);
+            const owner = phone.owner.toString();
+            //if the item owner does match the User sending the request return
+            if(user.id !== owner){
+                return res
+                .status(400)
+                .json({
+                    status: 'fail',
+                    message: "You don't have permission to perform this action"
+                })
+            }
+            //initialize payment
+            const response = await initPayment(email, plan_code);
+            // console.log(response)
+            const {authorization_url, reference} = response;
+            //save payment ref
+            await Mobile_Phones.findByIdAndUpdate(id, {"promotion.ref": reference});
+
+            res
+            .status(201)
+            .json({
+                status: 'success',
+                message: "payment initialization successful",
+                data:{
+                    authorization_url
+                }
+            })
+
+        }catch(error){
+            res
+            .status(500)
+            .json({
+                status: "fail",
+                error: {
+                    message: error
                 }
             })
         }
