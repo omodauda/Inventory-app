@@ -7,7 +7,7 @@ const passportJWT = passport.authenticate("jwt", {session: false});
 const {create, getAllMobilePhones, verifyPost, promotePost} = require('../../controllers/items/mobile_phones');
 
 const upload = require('../../helpers/multer');
-const {validateBody, schemas} = require('../../helpers/validator');
+const {validateBody, schemas} = require('../../validators');
 
 router
     .route("/")
@@ -18,8 +18,8 @@ router
     .route("/verify/:id")
     .patch(verifyPost)
 
-router
-    .route("/promote/:id")
-    .post(validateBody(schemas.promoteProductSchema), passportJWT, promotePost)
+// router
+//     .route("/promote/:id")
+//     .post(validateBody(schemas.promoteProductSchema), passportJWT, promotePost)
 
 module.exports = router;

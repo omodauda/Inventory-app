@@ -6,7 +6,7 @@ const passportLogin = passport.authenticate('local', {session: false});
 const passportGoogle = passport.authenticate("google", {session: false});
 const passportJWT = passport.authenticate("jwt", {session: false});
 
-const {validateBody, schemas} = require('../helpers/validator');
+const {validateBody, schemas} = require('../validators');
 const accessControl = require('../middlewares/accessControl');
 
 
@@ -31,7 +31,7 @@ router
 
 router
     .route("/update")
-    .patch(validateBody(schemas.updateSchema), passportJWT, updateUser)
+    .patch(validateBody(schemas.updateUserSchema), passportJWT, updateUser)
 
 router
     .route("/profile/:userId")

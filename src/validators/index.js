@@ -38,15 +38,14 @@ module.exports = {
         password: Joi.string().required()
       }),
       
-      updateSchema: Joi.object().keys({
+      updateUserSchema: Joi.object().keys({
         phone: Joi.string(),
         location: Joi.string(),
         firstName: Joi.string(),
         lastName: Joi.string()
       }),
 
-      promoteProductSchema: Joi.object().keys({
-        email: Joi.string().email().required(),
+      promoteAdSchema: Joi.object().keys({
         plan_code: Joi.string().required()
       })
     }
