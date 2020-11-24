@@ -60,31 +60,7 @@ const mobilePhoneSchema = new schema({
     },
     price: {
         type: String
-    },
-    status: {
-        type: String,
-        default: "Reviewing",
-        enum: ["Active", "Reviewing", "Closed", "Declined"]
-    },
-    // promotion: {
-    //     status: {
-    //         type: Boolean
-    //     },
-    //     ref: {
-    //         type: String
-    //     },
-    //     type:{
-    //         type: String,
-    //         enum: ["Top-week", "Top-month", "Boost-premium"]
-    //     },
-    //     startDate: {
-    //         type: Date
-    //     },
-    //     dueDate:{
-    //         type: Date
-    //     }
-    // }
-
+    }
 }, {timestamps: true});
 
 const Mobile_Phone = mongoose.model("Mobile_Phone", mobilePhoneSchema);

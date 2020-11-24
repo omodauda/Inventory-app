@@ -1,6 +1,6 @@
 function product(data, req, res){
     userRole = req.user.role;
-    const newData = data.filter(d => d.product.status ==="Active");
+    const newData = data.filter(d => d.status ==="Active");
     if(userRole === 'user'){
         res
         .status(200)
@@ -27,7 +27,7 @@ function sellerPage(profile, ads, req, res){
     // }else{
     //     console.log('not equals')
     // }
-    const publicData = ads.filter(d => d.product.status ==="Active");
+    const publicData = ads.filter(d => d.status ==="Active");
     
     if(req.user.id == profile.userId){
        res
