@@ -22,6 +22,11 @@ const adSchema = new schema({
         type: String,
         required: true
     },
+    status: {
+        type: String,
+        default: "Reviewing",
+        enum: ["Active", "Reviewing", "Closed", "Declined"]
+    },
     promotion: {
         status: {
             type: Boolean,

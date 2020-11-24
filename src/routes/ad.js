@@ -6,11 +6,15 @@ const passportJWT = passport.authenticate('jwt', {session: false});
 
 const {
     promoteAd,
-    verifyAdPayment
+    verifyAdPayment,
+    acceptAd
 } = require('../controllers/ad');
 
 const {validateBody, schemas} = require('../validators');
 
+router
+    .route('/accept/:id')
+    .patch(acceptAd)
 router
     .route('/promote/:id')
     .post(validateBody(schemas.promoteAdSchema), passportJWT, promoteAd)
