@@ -108,5 +108,47 @@ module.exports = {
                 }
             })
         }
+    },
+    editPost: async(req, res) => {
+        const {id} = req.params;
+        try{
+            const post = await LaptopAndComputer.findById(id);
+            if(!post){
+                return res
+                .status(400)
+                .json({
+                    status: "fail",
+                    message: `No laptop & computer with id ${id}`
+                })
+            }
+            //get user id
+            const user = await User.findOne({userId: req.user.id});
+            //get owner from post
+            const owner = post.owner.toString();
+            
+            if(owner !== user.id){
+                return res
+                .status(400)
+                .json({
+                    status: "success",
+                    message: "You don't have permission to perform this action"
+                });
+            }
+            await LaptopAndComputer.findByIdAndUpdate(id, req.body, {new: true});
+            res
+            .status(200)
+            .json({
+                status: 'success',
+                message: "update successful"
+            })
+        }catch(error){
+            res
+            .status(400)
+            .json({
+                error: {
+                    message: error.message
+                }
+            })
+        }
     }
 }

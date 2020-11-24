@@ -38,7 +38,7 @@ router
     .get(passportJWT, profile)
 
 router
-    .route("/profile/upload_image")
+    .route("/profile/upload-image")
     .post(passportJWT, upload.single('image'), uploadImage)
     
 module.exports = router;
