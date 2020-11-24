@@ -42,6 +42,39 @@ module.exports = {
         }
 
     },
+    declineAd: async(req, res) => {
+        const {id} = req.params;
+        try{
+            const ad = await Ad.findById(id);
+            if(!ad){
+                return res
+                .status(400)
+                .json({
+                    status: "fail",
+                    message: `item with id ${id} not found`
+                });
+            }
+
+            const data = await Ad.findByIdAndUpdate(id, {status: "Declined"}, {new: true});
+
+            res
+            .status(200)
+            .json({
+                status: "success",
+                message: "Ad successfully declined",
+                data
+            })
+        }catch(error){
+            res
+            .status(400)
+            .json({
+                status: "fail",
+                error: {
+                    message: error.message
+                }
+            })
+        }
+    },
     promoteAd: async(req, res)=>{
         //get ad id
         const {id} = req.params;
