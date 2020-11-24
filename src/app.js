@@ -2,14 +2,23 @@ require('dotenv').config();
 const express = require('express');
 require('./database/db');
 
-//Routes
+/*Routes*/
+//user
 const userRoutes = require('./routes/user');
+
+//category
 const categoryRoutes = require('./routes/category');
 const mobileTablets = require('./routes/categories/mobile_phones_tablets');
+const electronics = require('./routes/categories/electronics');
+
+//sub-categories
 const mobile = require('./routes/items/mobile_phones');
 const tablet = require('./routes/items/tablet');
 const laptopAndComputers = require('./routes/items/laptops_and_computers');
-const electronics = require('./routes/categories/electronics');
+
+//ad
+const ad = require('./routes/ad');
+
 
 
 const app = express();
@@ -34,6 +43,7 @@ app.use("/api/v1/mobile-phones", mobile);
 app.use("/api/v1/tablets", tablet);
 app.use("/api/v1/computers-and-laptops", laptopAndComputers);
 app.use("/api/v1/electronics", electronics);
+app.use("/api/v1/ad", ad);
 
 app.use((err, req, res, next) => {
     res.status(400).json({

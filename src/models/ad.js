@@ -21,6 +21,24 @@ const adSchema = new schema({
     onModel: {
         type: String,
         required: true
+    },
+    promotion: {
+        status: {
+            type: Boolean
+        },
+        ref: {
+            type: String
+        },
+        type:{
+            type: String,
+            enum: ["Top-week", "Top-month", "Boost-premium"]
+        },
+        startDate: {
+            type: Date
+        },
+        dueDate:{
+            type: Date
+        }
     }
 }, {timestamps: true});
 
