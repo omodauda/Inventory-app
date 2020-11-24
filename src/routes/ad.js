@@ -8,7 +8,8 @@ const {
     promoteAd,
     verifyAdPayment,
     acceptAd,
-    declineAd
+    declineAd,
+    closeAd
 } = require('../controllers/ad');
 
 const {validateBody, schemas} = require('../validators');
@@ -17,9 +18,16 @@ router
     .route('/accept/:id')
     .patch(acceptAd)
 
+    
 router
     .route('/decline/:id')
     .patch(declineAd)
+
+
+router
+    .route('/close/:id')
+    .patch(closeAd)
+
 
 router
     .route('/promote/:id')
