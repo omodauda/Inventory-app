@@ -93,10 +93,11 @@ module.exports = {
             .json({
                 status: 'success',
                 message: "user created successfully!",
-                data: { //send userProfile.userId || user.id, it'll be passed as params to vivit user-page.
+                data: { //send userProfile.userId || user.id, it'll be passed as params to visit user-page.
                     token,
                     confirmationToken: confirmToken,
                     role: user.role,
+                    userId: user.id,
                     email: user.local.email,
                     firstName: userProfile.firstName,
                     lastName: userProfile.lastName
@@ -143,7 +144,8 @@ module.exports = {
                         message: 'Invalid token'
                     }
                 })
-            } else if (confirmToken === token && date > tokenExpiration) {  //if token is valid but expiration time has elapsed
+            } else if (confirmToken === token && date > tokenExpiration) {  
+                //if token is valid but expiration time has elapsed
                 return res
                 .status(400)
                 .json({

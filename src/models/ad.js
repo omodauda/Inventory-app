@@ -24,7 +24,8 @@ const adSchema = new schema({
     },
     promotion: {
         status: {
-            type: Boolean
+            type: Boolean,
+            default: false
         },
         ref: {
             type: String
