@@ -9,7 +9,8 @@ const {
     verifyAdPayment,
     acceptAd,
     declineAd,
-    closeAd
+    closeAd,
+    deleteAd
 } = require('../controllers/ad');
 
 const {validateBody, schemas} = require('../validators');
@@ -36,5 +37,9 @@ router
 router
     .route("/verify-payment/:id")
     .post(verifyAdPayment)
+
+router
+    .route('/remove/:id')
+    .delete(passportJWT, deleteAd)
 
 module.exports = router;

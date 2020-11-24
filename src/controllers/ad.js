@@ -5,6 +5,10 @@ const {
     initPayment,
     verifyPayment
 } = require('../helpers/payment');
+const Tablet = require('../models/items/tablets');
+
+//helper
+const cloudinary = require('../helpers/cloudinary')
 
 module.exports = {
 
@@ -223,6 +227,79 @@ module.exports = {
                 message: 'Payment verification was successful'
             })
             
+        }catch(error){
+            res
+            .status(500)
+            .json({
+                status: "fail",
+                error: {
+                    message: error
+                }
+            })
+        }
+    },
+    deleteAd: async(req, res) => {
+        const {id} = req.params;
+        try{
+            const ad = await Ad.findById(id).populate('product');
+            if(!ad){
+                return res
+                .status(400)
+                .json({
+                    status: "fail",
+                    message: `No ad with id ${id} found`
+                });
+            };
+            const user = await User.findOne({userId: req.user.id});
+            const adOwner = ad.user.toString();
+        
+            if(adOwner !== user.id){
+                return res
+                .status(400)
+                .json({
+                    status: "fail",
+                    message: "You don't have permission to perform this action"
+                });
+            };
+            const adModel = ad.onModel;
+            const productId = ad.product.id;
+            
+            switch(adModel){
+                case 'Mobile_Phone':
+                    console.log("Mobile phone")
+                    break
+                case 'LaptopAndComputer':
+                    console.log("laptops")
+                    break
+                case 'Tablet':
+                    // console.log(productId)
+                    //get the item in its model
+                    const tablet = await Tablet.findById(productId);
+                    // console.log(tablet)
+                    //get the item images cloudinary public_ids
+                    const {itemImages:{cloudinary_ids}} = tablet;
+                   //delete each item images on cloudinary
+                    cloudinary_ids.map(image => {
+                        // console.log(image)
+                        //delete function
+                        const deleteImages = async() => {
+                            await cloudinary.uploader.destroy(image);
+                        }
+                        deleteImages();
+                    });
+                    //delete item
+                    await Tablet.findByIdAndDelete(productId);
+                    //delete ad
+                    await Ad.findByIdAndDelete(id);
+                    res
+                    .status(200)
+                    .json({
+                        status: "success",
+                        message: "Tablet ad successfully deleted"
+                    })
+                    break
+                default:
+            }
         }catch(error){
             res
             .status(500)
