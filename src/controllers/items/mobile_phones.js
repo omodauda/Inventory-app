@@ -124,7 +124,9 @@ module.exports = {
                     message: `No mobile phone with id ${id}`
                 })
             }
+            //get user id
             const user = await User.findOne({userId: req.user.id});
+            //get owner from post
             const owner = post.owner.toString();
             
             if(owner !== user.id){
@@ -135,7 +137,7 @@ module.exports = {
                     message: "You don't have permission to perform this action"
                 });
             }
-            const data = await Mobile_Phones.findByIdAndUpdate(id, req.body, {new: true});
+            await Mobile_Phones.findByIdAndUpdate(id, req.body, {new: true});
             res
             .status(200)
             .json({

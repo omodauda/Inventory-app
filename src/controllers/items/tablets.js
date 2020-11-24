@@ -107,5 +107,47 @@ module.exports = {
                 }
             })
         }
+    },
+    editTablet: async(req, res) => {
+        const {id} = req.params;
+        try{
+            const tablet = await Tablet.findById(id);
+            if(!tablet){
+                return res
+                .status(400)
+                .json({
+                    status: "fail",
+                    message: `No tablet with id ${id}`
+                })
+            }
+            //get user id
+            const user = await User.findOne({userId: req.user.id});
+            //get owner of tablet
+            const owner = tablet.owner.toString();
+            
+            if(owner !== user.id){
+                return res
+                .status(400)
+                .json({
+                    status: "success",
+                    message: "You don't have permission to perform this action"
+                });
+            }
+            await Tablet.findByIdAndUpdate(id, req.body, {new: true});
+            res
+            .status(200)
+            .json({
+                status: 'success',
+                message: "update successful"
+            })
+        }catch(error){
+            res
+            .status(400)
+            .json({
+                error: {
+                    message: error.message
+                }
+            })
+        }
     }
 }

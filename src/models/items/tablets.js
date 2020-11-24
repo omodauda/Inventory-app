@@ -20,6 +20,9 @@ const tabletSchema = new schema({
             type: String
         }]
     },
+    location:{
+        type: String
+    },
     brand: {
         type: String,
         required: true
