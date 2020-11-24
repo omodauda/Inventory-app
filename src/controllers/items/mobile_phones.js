@@ -112,5 +112,45 @@ module.exports = {
             })
         }
     },
+    editMobilePhone: async(req, res) => {
+        const {id} = req.params;
+        try{
+            const post = await Mobile_Phones.findById(id);
+            if(!post){
+                return res
+                .status(400)
+                .json({
+                    status: "fail",
+                    message: `No mobile phone with id ${id}`
+                })
+            }
+            const user = await User.findOne({userId: req.user.id});
+            const owner = post.owner.toString();
+            
+            if(owner !== user.id){
+                return res
+                .status(400)
+                .json({
+                    status: "success",
+                    message: "You don't have permission to perform this action"
+                });
+            }
+            const data = await Mobile_Phones.findByIdAndUpdate(id, req.body, {new: true});
+            res
+            .status(200)
+            .json({
+                status: 'success',
+                message: "update successful"
+            })
+        }catch(error){
+            res
+            .status(400)
+            .json({
+                error: {
+                    message: error.message
+                }
+            })
+        }
+    }
     
 }
