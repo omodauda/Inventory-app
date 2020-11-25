@@ -16,14 +16,16 @@ const {
 
 const {validateBody, schemas} = require('../validators');
 
+const accessControl = require('../middlewares/accessControl');
+
 router
     .route('/accept/:id')
-    .patch(passportJWT, acceptAd)
+    .patch(passportJWT, accessControl(['admin']), acceptAd)
 
     
 router
     .route('/decline/:id')
-    .patch(passportJWT, declineAd)
+    .patch(passportJWT, accessControl(['admin']), declineAd)
 
 
 router
@@ -45,6 +47,6 @@ router
 
 router
     .route("/validate-promotions")
-    .get(passportJWT, checkPromotions)
+    .get(passportJWT, accessControl(['admin']), checkPromotions)
 
 module.exports = router;

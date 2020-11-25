@@ -104,6 +104,17 @@ module.exports = {
                     message: `item with id ${id} not found`
                 });
             }
+            const user = await User.findOne({userId: req.user.id});
+            const adOwner = ad.user.toString();
+        
+            if(adOwner !== user.id){
+                return res
+                .status(400)
+                .json({
+                    status: "fail",
+                    message: "You don't have permission to perform this action"
+                });
+            };
 
             const data = await Ad.findByIdAndUpdate(id, {status: "Closed"}, {new: true});
 

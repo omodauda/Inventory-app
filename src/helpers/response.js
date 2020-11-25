@@ -22,11 +22,6 @@ function product(data, req, res){
 
 function sellerPage(profile, ads, req, res){
     
-    // if(req.user.id ==profile.userId){
-    //     console.log('equals')
-    // }else{
-    //     console.log('not equals')
-    // }
     const publicData = ads.filter(d => d.status ==="Active");
     
     if(req.user.id == profile.userId){
