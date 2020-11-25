@@ -1,14 +1,27 @@
 const Ad = require('../models/ad');
 const User = require('../models/user');
+const Tablet = require('../models/items/tablets');
+const Mobile_Phone = require('../models/items/mobile_phones');
+const LaptopAndComputer = require('../models/items/laptop_and_computer');
 
 const {
     initPayment,
     verifyPayment
 } = require('../helpers/payment');
-const Tablet = require('../models/items/tablets');
+
 
 //helper
-const cloudinary = require('../helpers/cloudinary')
+const cloudinary = require('../helpers/cloudinary');
+
+//delete item images from cloudinary func
+const cloudinaryDelete = async(cloudinary_ids) => {
+    cloudinary_ids.map(id =>{
+        const deleteImages = async() => {
+            await cloudinary.uploader.destroy(id);
+        }
+        deleteImages();
+    })
+}
 
 module.exports = {
 
@@ -184,7 +197,8 @@ module.exports = {
                 })
             };
 
-            /* mongoose can only compare dates stored in ISO(date-time) format
+            /* mongoose can only compare dates stored in ISO(date-time) format, this come in handy when we want to 
+                run a script to end the promotion on ads on their respective dueDates.
                 whereas, JS date object is in number of milliseconds since 1970 (e.g: 1606215439828)*smiles*
                 To deal with this we get time in js date object and convert it to ISO(e.g: 2020-11-24T10:57:19.828Z)
                 before saving in the mongoose doc.
@@ -193,7 +207,7 @@ module.exports = {
                 new Date(date in milliseconds) converts it to ISO format
 
                 1day = 86400000 milliseconds
-                7days = 86400000 * 7
+                i.e 7days = 86400000 * 7
 
             */
            //get current time
@@ -265,28 +279,34 @@ module.exports = {
             const productId = ad.product.id;
             
             switch(adModel){
-                case 'Mobile_Phone':
-                    console.log("Mobile phone")
+                case 'Mobile_Phone':{
+                    const phone = await Mobile_Phone.findById(productId);
+                    //get item images cloudinary public_ids
+                    const {itemImages:{cloudinary_ids}} = phone;
+                    //delete item images on cloudinary
+                    await cloudinaryDelete(cloudinary_ids);
+                    //delete item
+                    await Mobile_Phone.findByIdAndDelete(productId);
+                    //delete ad
+                    await Ad.findByIdAndDelete(id)
+                    res
+                    .status(200)
+                    .json({
+                        status: "success",
+                        message: "Mobile phone ad successfully deleted"
+                    })
                     break
+                }
                 case 'LaptopAndComputer':
                     console.log("laptops")
                     break
-                case 'Tablet':
-                    // console.log(productId)
+                case 'Tablet':{
                     //get the item in its model
                     const tablet = await Tablet.findById(productId);
-                    // console.log(tablet)
                     //get the item images cloudinary public_ids
                     const {itemImages:{cloudinary_ids}} = tablet;
                    //delete each item images on cloudinary
-                    cloudinary_ids.map(image => {
-                        // console.log(image)
-                        //delete function
-                        const deleteImages = async() => {
-                            await cloudinary.uploader.destroy(image);
-                        }
-                        deleteImages();
-                    });
+                    await cloudinaryDelete(cloudinary_ids);
                     //delete item
                     await Tablet.findByIdAndDelete(productId);
                     //delete ad
@@ -298,6 +318,7 @@ module.exports = {
                         message: "Tablet ad successfully deleted"
                     })
                     break
+                }
                 default:
             }
         }catch(error){
