@@ -4,7 +4,7 @@
   "description": "Inventory store app.",
   "main": "app.js",
   "scripts": {
-    "start": "node src/index.js",
+    "start": "env NODE_ENV=production node src/index.js",
     "test": "jest",
     "dev": "nodemon src/index.js"
   },
