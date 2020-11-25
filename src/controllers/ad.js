@@ -294,12 +294,27 @@ module.exports = {
                     .json({
                         status: "success",
                         message: "Mobile phone ad successfully deleted"
-                    })
+                    });
                     break
                 }
-                case 'LaptopAndComputer':
-                    console.log("laptops")
+                case 'LaptopAndComputer':{
+                    const item = await LaptopAndComputer.findById(productId);
+
+                    const {itemImages: {cloudinary_ids}} = item;
+
+                    await cloudinaryDelete(cloudinary_ids);
+
+                    await LaptopAndComputer.findByIdAndDelete(productId);
+
+                    await Ad.findByIdAndDelete(id)
+                    res
+                    .status(200)
+                    .json({
+                        status: "success",
+                        message: "Mobile phone ad successfully deleted"
+                    });
                     break
+                }
                 case 'Tablet':{
                     //get the item in its model
                     const tablet = await Tablet.findById(productId);
@@ -316,10 +331,12 @@ module.exports = {
                     .json({
                         status: "success",
                         message: "Tablet ad successfully deleted"
-                    })
+                    });
                     break
                 }
-                default:
+                default:{
+                    return
+                }
             }
         }catch(error){
             res
