@@ -5,7 +5,6 @@ const mobilePhoneSchema = new schema({
 
     category: {
         type: String,
-        // ref: "Category",
         required: true
     },
     owner: {
@@ -22,7 +21,8 @@ const mobilePhoneSchema = new schema({
         }]
     },
     location: {
-        type: String
+        type: String,
+        required: true
     },
     brand: {
         type: String,
@@ -35,31 +35,43 @@ const mobilePhoneSchema = new schema({
     },
     condition: {
         type: String,
+        required: true,
         enum: ["New", "Used", "Refurbished"]
     },
     secondCondition: {
         type: String
     },
     ram: {
-        type: String
+        type: String,
+        required: true
     },
     rom: {
-        type: String
+        type: String,
+        required: true
     },
     screenSize: {
-        type: String
+        type: String,
+        required: true
     },
     colour: {
-        type: String
+        type: String,
+        required: true
     },
     os: {
-        type: String
+        type: String,
+        required: true
     },
     battery: {
-        type: Number
+        type: Number,
+        required: true
     },
     price: {
-        type: String
+        type: String,
+        required: true
+    },
+    description: {
+        type: String,
+        required: true
     }
 }, {timestamps: true});
 

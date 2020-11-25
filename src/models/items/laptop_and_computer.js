@@ -20,7 +20,8 @@ const laptopAndComputerSchema = new schema({
         }]
     },
     location: {
-        type: String
+        type: String,
+        required: true
     },
     type: {
         type: String,
@@ -37,40 +38,52 @@ const laptopAndComputerSchema = new schema({
     },
     condition:{
         type: String,
+        required: true,
         enum: ["New", "Used", "Refurbished"]
     },
     price: {
-        type: String
+        type: String,
+        required: true
     },
     processor: {
-        type: String
+        type: String,
+        required: true
     },
     numberOfCores: {
-        type: String
+        type: String,
+        required: true
     },
     ram: {
-        type: String
+        type: String,
+        required: true
     },
     storageCapacity: {
-        type: String
+        type: String,
+        required: true
     },
     storageType: {
-        type: String
+        type: String,
+        required: true
     },
     displaySize: {
-        type: String
+        type: String,
+        required: true
     },
     graphicCard: {
         type: String,
+        required: true
     },
     graphicCardMemory: {
-        type: String
+        type: String,
+        required: true
     },
     os: {
-        type: String
+        type: String,
+        required: true
     },
     description: {
-        type: String
+        type: String,
+        required: true
     }
 },{timestamps: true});
 

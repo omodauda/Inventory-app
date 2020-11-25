@@ -12,13 +12,15 @@ const {
 
 const upload = require('../../helpers/multer');
 
+const {validateBody, schemas} = require('../../validators');
+
 router
     .route('/')
-    .post(passportJWT, upload.array("images"), create)
+    .post(validateBody(schemas.createLaptop), passportJWT, upload.array("images"), create)
     .get(passportJWT, getAll)
 
 router
     .route("/update/:id")
-    .patch(passportJWT, editPost)
+    .patch(validateBody(schemas.editLaptop), passportJWT, editPost)
 
 module.exports = router;

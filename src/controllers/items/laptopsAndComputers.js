@@ -18,7 +18,10 @@ module.exports = {
         };
 
         try{
-            const {type, brand, model} = req.body;
+            const {
+                type, brand, model, location, condition, price, processor, numberOfCores, ram, storageCapacity,
+                storageType, graphicCard, graphicCardMemory, os, description
+            } = req.body;
             const owner = await User.findOne({userId: req.user.id});
             const category = "Electronics";
 
@@ -26,9 +29,7 @@ module.exports = {
             const item = new LaptopAndComputer({
                 category,
                 owner,
-                type,
-                brand,
-                model
+               ...req.body
             });
             await item.save();
             //create the ad

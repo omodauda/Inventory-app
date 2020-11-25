@@ -20,7 +20,21 @@ module.exports = {
         };
 
         try{
-            const {brand, model} = req.body;
+            const {
+                brand, 
+                model,
+                location,
+                condition,
+                secondConition,
+                ram,
+                rom,
+                screenSize,
+                colour,
+                os,
+                battery,
+                price,
+                description
+            } = req.body;
             const owner = await User.findOne({userId: req.user.id});
             const category = "Mobile Phones & Tablets";
 
@@ -28,8 +42,7 @@ module.exports = {
             const phone = new Mobile_Phones({
                 category,
                 owner,
-                brand,
-                model
+                ...req.body
             });
 
             await phone.save();

@@ -18,26 +18,26 @@ const {validateBody, schemas} = require('../validators');
 
 router
     .route('/accept/:id')
-    .patch(acceptAd)
+    .patch(passportJWT, acceptAd)
 
     
 router
     .route('/decline/:id')
-    .patch(declineAd)
+    .patch(passportJWT, declineAd)
 
 
 router
     .route('/close/:id')
-    .patch(closeAd)
+    .patch(passportJWT, closeAd)
 
 
 router
     .route('/promote/:id')
-    .post(validateBody(schemas.promoteAdSchema), passportJWT, promoteAd)
+    .post(passportJWT, validateBody(schemas.promoteAdSchema), passportJWT, promoteAd)
 
 router
     .route("/verify-payment/:id")
-    .post(verifyAdPayment)
+    .post(passportJWT, verifyAdPayment)
 
 router
     .route('/remove/:id')
@@ -45,6 +45,6 @@ router
 
 router
     .route("/validate-promotions")
-    .get(checkPromotions)
+    .get(passportJWT, checkPromotions)
 
 module.exports = router;

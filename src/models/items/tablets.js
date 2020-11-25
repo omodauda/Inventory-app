@@ -4,7 +4,6 @@ const schema = mongoose.Schema;
 const tabletSchema = new schema({
     category: {
         type: String,
-        // ref: "Category",
         required: true
     },
     owner: {
@@ -21,7 +20,8 @@ const tabletSchema = new schema({
         }]
     },
     location:{
-        type: String
+        type: String,
+        required: true
     },
     brand: {
         type: String,
@@ -29,31 +29,40 @@ const tabletSchema = new schema({
     },
     model: {
         type: String,
+        required: true
     },
     condition: {
         type: String,
+        required: true,
         enum: ["New", "Used", "Refurbished"]
     },
-    storageCapacity: {
-        type: String
+    rom: {
+        type: String,
+        required: true
     },
     screenSize: {
-        type: String
+        type: String,
+        required: true
     },
     colour: {
-        type: String
+        type: String,
+        required: true
     },
-    OperatingSystem:{
-        type: String
+    os:{
+        type: String,
+        required: true
     },
     ram: {
-        type: String
+        type: String,
+        required: true
     },
     description: {
-        type: String
+        type: String,
+        required: true
     },
     price: {
-        type: String
+        type: String,
+        required: true
     }
 }, {timestamps: true});
 

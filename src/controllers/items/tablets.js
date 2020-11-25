@@ -19,14 +19,17 @@ module.exports = {
         };
 
         try{
-            const {brand} = req.body;
+            const {
+                brand, model, location, condition, rom,
+                screenSize, colour, os, ram, description, price
+            } = req.body;
             const category = "Mobile Phones & Tablets";
             const owner = await User.findOne({userId: req.user.id});
 
             const tablet = new Tablet({
                 category,
                 owner: owner._id,
-                brand
+                ...req.body
             });
 
             await tablet.save();

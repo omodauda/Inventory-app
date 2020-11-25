@@ -19,7 +19,7 @@ router
 
 router
     .route("/confirm")
-    .post(verifyUser)
+    .post(validateBody(schemas.verifySchema), verifyUser)
 
 router
     .route("/login")
