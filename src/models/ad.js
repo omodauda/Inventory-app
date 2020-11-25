@@ -39,6 +39,9 @@ const adSchema = new schema({
             type: String,
             enum: ["Top-week", "Top-month", "Boost-premium"]
         },
+        isVerified:{
+            type: Boolean
+        },
         startDate: {
             type: Date
         },

@@ -10,7 +10,8 @@ const {
     acceptAd,
     declineAd,
     closeAd,
-    deleteAd
+    deleteAd,
+    checkPromotions
 } = require('../controllers/ad');
 
 const {validateBody, schemas} = require('../validators');
@@ -41,5 +42,9 @@ router
 router
     .route('/remove/:id')
     .delete(passportJWT, deleteAd)
+
+router
+    .route("/validate-promotions")
+    .get(checkPromotions)
 
 module.exports = router;

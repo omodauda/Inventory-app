@@ -175,6 +175,16 @@ module.exports = {
         const {id} = req.params;
         try{
             const ad = await Ad.findById(id);
+
+            if(ad.promotion.isVerified === true){
+                return res
+                .status(200)
+                .json({
+                    status: "success",
+                    message: "This ad has already been verified"
+                })
+            };
+
             const reference = ad.promotion.ref;
             if(!reference){
                 return res
@@ -231,7 +241,13 @@ module.exports = {
 
             await Ad.findByIdAndUpdate(
                 id, 
-                {promotion: {status: true, type: plan_name, startDate: startDateIso, dueDate: dueDateIso}}
+                {
+                    'promotion.status': true,
+                    'promotion.type': plan_name,
+                    'promotion.isVerified': true,
+                    'promotion.startDate': startDateIso,
+                    'promotion.dueDate': dueDateIso
+                }
             );
 
             res
@@ -337,6 +353,52 @@ module.exports = {
                 default:{
                     return
                 }
+            }
+        }catch(error){
+            res
+            .status(500)
+            .json({
+                status: "fail",
+                error: {
+                    message: error
+                }
+            })
+        }
+    },
+    checkPromotions: async(req, res) => {
+        const currentTime = Date.now();
+        const currentTimeIso = new Date(currentTime);
+        
+        try{
+            const ads = await Ad.find({"promotion.dueDate": {$lte: currentTimeIso}});
+            if(ads.length !== 0){
+                ads.map(ad => {
+                    const id = ad.id;
+                   const expire = async() => {
+                    await Ad.findByIdAndUpdate(
+                        id, 
+                        {
+                            'promotion.status': false,
+                            'promotion.type': undefined,
+                            'promotion.isVerified': false
+                        }, 
+                        {new: true})
+                   }
+                   expire();
+                })
+                return res
+                .status(200)
+                .json({
+                    status: "success",
+                    message: `promotion on ${ads.length}ads has expired now`,
+                })
+            }else{
+                res
+                .status(200)
+                .json({
+                    status: "success",
+                    message: "No ads with current time as due date "
+                })
             }
         }catch(error){
             res

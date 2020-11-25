@@ -40,7 +40,7 @@ module.exports = {
             );
             const {status, plan_object:{name: plan_name}} = data.data.data;
             
-            return {status, paidAt, plan_name}
+            return {status, plan_name}
         }catch(error){
             return error.message;
         }
