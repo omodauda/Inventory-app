@@ -1,6 +1,5 @@
 const Tablet = require('../../models/items/tablets');
 const User = require('../../models/user');
-const Category = require('../../models/category');
 const Ad = require('../../models/ad');
 const publicResponse = require('../../helpers/response');
 
@@ -19,10 +18,6 @@ module.exports = {
         };
 
         try{
-            const {
-                brand, model, location, condition, rom,
-                screenSize, colour, os, ram, description, price
-            } = req.body;
             const category = "Mobile Phones & Tablets";
             const owner = await User.findOne({userId: req.user.id});
 
@@ -55,7 +50,7 @@ module.exports = {
 
                 const upload = async() => {
                     const images = await cloudinary.uploader.upload(file.path, {
-                        folder: 'sell-it/product_image',
+                        folder: 'sell-it/product_image/tablets',
                         public_id: `productId=${tablet._id}_image${index}`
                     });
 
@@ -69,7 +64,7 @@ module.exports = {
             });
             
             res
-            .status(200)
+            .status(201)
             .json({
                 status: "success",
                 message: "post successfully created"
@@ -89,6 +84,7 @@ module.exports = {
             const data = await Ad.find(
                 {subCategory: 'Tablets'}
             )
+            .sort({"promotion.type": -1, createdAt: -1})
             .populate({path: 'product', select: '-itemImages.cloudinary_ids -_id -owner -__v'})
             .populate({path: 'user', select: '-_id -__v'});
 
@@ -130,7 +126,7 @@ module.exports = {
             
             if(owner !== user.id){
                 return res
-                .status(400)
+                .status(401)
                 .json({
                     status: "success",
                     message: "You don't have permission to perform this action"

@@ -7,7 +7,7 @@ module.exports = {
         try{
             const ads = await Ad.find(
                 {category: "Mobile Phones & Tablets"}
-            ).sort('-createdAt')
+            ).sort({"promotion.type": -1, createdAt: -1})
             .populate({path: 'product', select: '-itemImages.cloudinary_ids -_id -owner -__v'})
             .populate({path: 'user', select: '-_id -__v'});
 

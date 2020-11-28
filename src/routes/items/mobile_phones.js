@@ -16,10 +16,10 @@ const {validateBody, schemas } = require('../../validators');
 router
     .route("/")
     .post(passportJWT, upload.array('images'), create)
-    .get(validateBody(schemas.createMobileSchema), passportJWT, getAllMobilePhones)
+    .get(passportJWT, getAllMobilePhones)
 
 router
-    .route("/update/:id")
+    .route("/:id")
     .patch(validateBody(schemas.editMobileSchema), passportJWT, editMobilePhone)
 
 

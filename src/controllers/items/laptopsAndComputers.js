@@ -18,10 +18,6 @@ module.exports = {
         };
 
         try{
-            const {
-                type, brand, model, location, condition, price, processor, numberOfCores, ram, storageCapacity,
-                storageType, graphicCard, graphicCardMemory, os, description
-            } = req.body;
             const owner = await User.findOne({userId: req.user.id});
             const category = "Electronics";
 
@@ -53,7 +49,7 @@ module.exports = {
 
                 const upload = async() => {
                     const images = await cloudinary.uploader.upload(file.path, {
-                        folder: 'sell-it/product_image',
+                        folder: 'sell-it/product_image/laptops-computers',
                         public_id: `productId=${item._id}_image${index}`
                     });
 
@@ -67,7 +63,7 @@ module.exports = {
             });
 
             res
-            .status(200)
+            .status(201)
             .json({
                 status: "success",
                 message: "post successfully created"
@@ -88,6 +84,7 @@ module.exports = {
             const data = await Ad.find(
                 {subCategory: "Laptops & Computers"}
             )
+            .sort({"promotion.type": -1, createdAt: -1})
             .populate({path: 'product', select: '-itemImages.cloudinary_ids -_id -owner -__v'})
             .populate({path: 'user', select: '-_id -__v'});
 
@@ -129,7 +126,7 @@ module.exports = {
             
             if(owner !== user.id){
                 return res
-                .status(400)
+                .status(401)
                 .json({
                     status: "success",
                     message: "You don't have permission to perform this action"

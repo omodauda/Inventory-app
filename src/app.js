@@ -17,7 +17,7 @@ const tablet = require('./routes/items/tablet');
 const laptopAndComputers = require('./routes/items/laptops_and_computers');
 
 //ad
-const ad = require('./routes/ad');
+const ads = require('./routes/ad');
 
 
 
@@ -43,7 +43,7 @@ app.use("/api/v1/mobile-phones", mobile);
 app.use("/api/v1/tablets", tablet);
 app.use("/api/v1/computers-and-laptops", laptopAndComputers);
 app.use("/api/v1/electronics", electronics);
-app.use("/api/v1/ad", ad);
+app.use("/api/v1/ads", ads);
 
 app.use((err, req, res, next) => {
     res.status(400).json({

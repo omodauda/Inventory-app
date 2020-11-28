@@ -51,22 +51,6 @@ module.exports = {
         lastName: Joi.string()
       }),
 
-      createMobileSchema: Joi.object().keys({
-        brand: Joi.string().required(),
-        model: Joi.string().required(),
-        location: Joi.string().required(),
-        condition: Joi.string().required(),
-        secondCondition: Joi.string(),
-        ram: Joi.string().required(),
-        rom: Joi.string().required(),
-        screenSize: Joi.string().required(),
-        colour: Joi.string().required(),
-        os: Joi.string().required(),
-        battery: Joi.number().required(),
-        price: Joi.string().required(),
-        description: Joi.string().required()
-      }),
-
       editMobileSchema: Joi.object().keys({
         brand: Joi.string(),
         model: Joi.string(),
@@ -81,24 +65,6 @@ module.exports = {
         battery: Joi.number(),
         price: Joi.string(),
         description: Joi.string()
-      }),
-
-      createLaptop: Joi.object().keys({
-        type: Joi.string().required(), 
-        brand: Joi.string().required(), 
-        model: Joi.string().required(), 
-        location: Joi.string().required(), 
-        condition: Joi.string().required(), 
-        price: Joi.string().required(), 
-        processor: Joi.string().required(), 
-        numberOfCores: Joi.string().required(), 
-        ram: Joi.string().required(), 
-        storageCapacity: Joi.string().required(),
-        storageType: Joi.string().required(), 
-        graphicCard: Joi.string().required(), 
-        graphicCardMemory: Joi.string().required(), 
-        os: Joi.string().required(), 
-        description: Joi.string().required()
       }),
 
       editLaptop: Joi.object().keys({
@@ -116,7 +82,8 @@ module.exports = {
         graphicCard: Joi.string(), 
         graphicCardMemory: Joi.string(), 
         os: Joi.string(), 
-        description: Joi.string()
+        description: Joi.string(),
+        displaySize: Joi.string()
       }),
 
       promoteAdSchema: Joi.object().keys({

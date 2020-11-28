@@ -19,34 +19,34 @@ const {validateBody, schemas} = require('../validators');
 const accessControl = require('../middlewares/accessControl');
 
 router
-    .route('/accept/:id')
-    .patch(passportJWT, accessControl(['admin']), acceptAd)
+    .route('/:id/accept')
+    .patch(passportJWT, accessControl('admin'), acceptAd)
 
     
 router
-    .route('/decline/:id')
-    .patch(passportJWT, accessControl(['admin']), declineAd)
+    .route('/:id/decline')
+    .patch(passportJWT, accessControl('admin'), declineAd)
 
 
 router
-    .route('/close/:id')
+    .route('/:id/close')
     .patch(passportJWT, closeAd)
 
 
 router
-    .route('/promote/:id')
+    .route('/:id/promote')
     .post(passportJWT, validateBody(schemas.promoteAdSchema), passportJWT, promoteAd)
 
 router
-    .route("/verify-payment/:id")
+    .route("/:id/verify-payment")
     .post(passportJWT, verifyAdPayment)
 
 router
-    .route('/remove/:id')
+    .route('/:id/remove')
     .delete(passportJWT, deleteAd)
 
 router
     .route("/validate-promotions")
-    .get(passportJWT, accessControl(['admin']), checkPromotions)
+    .get(passportJWT, accessControl('admin'), checkPromotions)
 
 module.exports = router;

@@ -14,7 +14,7 @@ const {signUp, login, googleOauth, verifyUser, updateUser, profile, uploadImage}
 const upload = require('../helpers/multer');
 
 router
-    .route("/signup")
+    .route("/register")
     .post(validateBody(schemas.userSchema), signUp)
 
 router
@@ -26,11 +26,11 @@ router
     .post(validateBody(schemas.loginSchema), passportLogin, login)
 
 router
-    .route("/google")
+    .route("/oauth/google")
     .post(passportGoogle, googleOauth);
 
 router
-    .route("/update")
+    .route("/profile/update")
     .patch(validateBody(schemas.updateUserSchema), passportJWT, updateUser)
 
 router

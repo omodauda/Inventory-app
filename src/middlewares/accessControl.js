@@ -1,5 +1,6 @@
 const accessControl = (...allowedRoles) => {
     return (req, res, next) => {
+        // console.log(req.user.role)
         if(!allowedRoles.includes(req.user.role)){
             return(
                 res

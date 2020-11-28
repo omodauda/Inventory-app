@@ -149,7 +149,7 @@ module.exports = {
             //verify ownership
             if(user.id != ad.user){
                 return res
-                .status(400)
+                .status(401)
                 .json({
                     status: 'fail',
                     message: "You don't have permission to perform this action"

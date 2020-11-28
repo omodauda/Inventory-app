@@ -32,10 +32,9 @@ module.exports = {
             const { email, password, firstName, lastName, role } = req.body;
 
             //check if user with the same email already exist
-            const existingUser = await Auth.findOne({'local.email': email});
-            const existingGoogleAccount = await Auth.findOne({'google.email': email});
+            const existingUser = await Auth.findOne({$or: [{"local.email": email}, {"google.email": email}]});
 
-            if(existingUser || existingGoogleAccount){
+            if(existingUser){
                 return res
                 .status(406)
                 .json({
@@ -189,7 +188,7 @@ module.exports = {
 
             const user = await User.find({'userId': id});
 
-            const [{firstName, lastName, userId}] = user;
+            const [{firstName, lastName, userId, avatar: {image}}] = user;
             
             res
             .status(200)
@@ -202,7 +201,8 @@ module.exports = {
                     status,
                     email,
                     firstName,
-                    lastName
+                    lastName,
+                    image
                 }
             })
         }
@@ -283,7 +283,7 @@ module.exports = {
             .populate({path: 'product', select: '-itemImages.cloudinary_ids'});
             
             if(!profile){
-                res
+                return res
                 .status(400)
                 .json({
                     status: "fail",
@@ -308,7 +308,9 @@ module.exports = {
 
             //return if no image selected
             if (!req.file)
-            res.status(400).json({
+            return res
+            .status(400)
+            .json({
             status: 'fail',
             error: 'No image found'
             });
@@ -319,7 +321,7 @@ module.exports = {
             const userProfile = await User.findOne({userId: id});
             //return if user profile not found
             if(!userProfile){
-                res
+                return res
                 .status(400)
                 .json({
                     status: "fail",
@@ -333,7 +335,7 @@ module.exports = {
             });
             //return if upload fails
             if(!image){
-                res
+                return res
                 .status(500)
                 .json({
                     status: "fail",
