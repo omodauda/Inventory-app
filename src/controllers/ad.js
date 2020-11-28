@@ -163,7 +163,7 @@ module.exports = {
             await Ad.findByIdAndUpdate(id, {"promotion.ref": reference});
 
             res
-            .status(201)
+            .status(200)
             .json({
                 status: 'success',
                 message: "payment initialization successful",
