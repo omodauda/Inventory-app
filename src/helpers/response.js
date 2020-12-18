@@ -1,7 +1,7 @@
 function product(data, req, res){
-    userRole = req.user.role;
+    
     const newData = data.filter(d => d.status ==="Active");
-    if(userRole === 'user'){
+    if(req.user === undefined || req.user.role === 'user'){
         res
         .status(200)
         .json({

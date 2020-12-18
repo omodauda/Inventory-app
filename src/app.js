@@ -19,6 +19,9 @@ const laptopAndComputers = require('./routes/items/laptops_and_computers');
 //ad
 const ads = require('./routes/ad');
 
+//public 
+const public = require('./routes/public');
+
 
 
 const app = express();
@@ -44,6 +47,7 @@ app.use("/api/v1/tablets", tablet);
 app.use("/api/v1/computers-and-laptops", laptopAndComputers);
 app.use("/api/v1/electronics", electronics);
 app.use("/api/v1/ads", ads);
+app.use("/api/v1/public", public)
 
 app.use((err, req, res, next) => {
     res.status(400).json({
